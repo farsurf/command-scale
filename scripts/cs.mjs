@@ -362,6 +362,7 @@ function cmdPass(name, id, n) {
     outcome: answer.outcome || '', familiarity: answer.familiarity || '',
     objective: answer.objective || task.objective,
   });
+  let finished = null;
   const both = Object.keys(PASSES).map((k) => read(path.join(d, `kept-${k}-${n}.json`)));
   if (both.every(Boolean)) {
     write(path.join(d, `placements-${n}.json`), {
@@ -372,8 +373,28 @@ function cmdPass(name, id, n) {
       rejected: both.flatMap((b) => b.rejected),
       elsewhere: both.flatMap((b) => b.elsewhere),
     });
+    // Said to the person, not to the program. A task is finished here and this
+    // is the only moment its reading exists as one thing; printed as counts of
+    // kept and thrown-out placements it tells somebody watching nothing about
+    // their own record, and a run that says nothing until the end looks from
+    // outside like a program helping itself to the machine.
+    const all = both.flatMap((b) => b.placements);
+    const tops = new Map();
+    for (const pl of all) {
+      const cur = tops.get(pl.column);
+      if (!cur || pl.rung > cur.rung) tops.set(pl.column, pl);
+    }
+    const said = COLUMNS.filter((c) => tops.has(c))
+      .map((c) => `${SITUATION_NAMES[c]} L${tops.get(c).rung} ${nameOf(c, tops.get(c).rung)}`)
+      .join(' · ');
+    finished = [
+      '',
+      `  READ: ${both[0].objective || task.objective || '(no objective stated)'}`,
+      `  ${said || 'nothing this ladder measures'}`,
+    ];
   }
   console.log(`Task ${n}, pass "${name}": ${placements.length} placement(s) kept, ${rejected.length} thrown out.`);
+  if (finished) console.log(finished.join('\n'));
   for (const r of rejected) {
     const said = UNUSABLE.get(r.reason);
     console.log(`  · message ${r.message ?? '?'} ${r.column || ''}${r.rung ? ` L${r.rung}` : ''} — ${r.reason}${said ? ` (${said})` : ''}`);

@@ -16,6 +16,27 @@ normative for the fourth situation — `prompts/knowing.md` and `prompts/depth.m
 are its implementation. The prompts below are the
 instrument, and they are written to be applied exactly as given.
 
+## What the person sees
+
+A reading is taken for somebody. Three things are owed to them, and none of
+them is the program's to say.
+
+**Before anything is read, say what will be read and stop.** Name the
+conversations by when they happened and how they open, say how many tasks that
+comes to, say where the readings will be kept and that one command removes
+them. Then stop and let them change the selection. Reading costs a model call
+per task and cannot be undone once spent; a selection they never saw is a
+selection they cannot correct, and correcting it afterwards means paying twice.
+
+**After each task, say one line to them**: what they were doing in that task,
+and the heights it reached. The program prints this line. Pass it on as it
+comes rather than saving it up — a run that says nothing until the end is
+indistinguishable, from outside, from a program helping itself to the machine,
+and a run stopped part way then hands over nothing at all.
+
+**At the end, hand over the card itself.** `report` and then `gap`, given to
+them whole. Describing what the card would say is not giving it to them.
+
 ## The order of work
 
 Run the program and do what it says next. It is resumable: a run that stops is
