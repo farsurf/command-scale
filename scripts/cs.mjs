@@ -7,6 +7,7 @@
 // Everything it writes goes under .command-scale/ in the directory it is run
 // from. A run that stops half way is continued rather than started again.
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { turnsFrom, knownRecordDirs, sessionFiles } from './lib/transcripts.mjs';
 import { verifyPlacements, answerWasUnusable, standing, UNUSABLE, COLUMNS,
@@ -25,7 +26,12 @@ const PASSES = {
 };
 import { card, weakest, grid, snapshot, movement } from './lib/report.mjs';
 
-const WORK = path.resolve(process.env.COMMAND_SCALE_DIR || '.command-scale');
+// A reading is about a person, not about a project, so what it keeps lives
+// with the person. Kept beside whatever directory the command happened to be
+// run from, somebody working in three repositories would have three separate
+// records of themselves, each too thin to hold anything, and the level would
+// depend on where they were standing when they asked.
+const WORK = path.resolve(process.env.COMMAND_SCALE_DIR || path.join(os.homedir(), '.command-scale'));
 const read = (p, d = null) => { try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch { return d; } };
 const write = (p, o) => { fs.mkdirSync(path.dirname(p), { recursive: true }); fs.writeFileSync(p, JSON.stringify(o, null, 2)); };
 const writeText = (p, s) => { fs.mkdirSync(path.dirname(p), { recursive: true }); fs.writeFileSync(p, s); };
@@ -350,6 +356,27 @@ function allPlacements() {
 
 
 /** Where things stand, on one screen, costing nothing. */
+
+/** Erasure. §9.4 requires it of an implementation assessing minors, and
+ *  anybody who has had their own words read should be able to take them back.
+ *  What goes is everything this kept: the quotations, the readings, the
+ *  counting. Nothing of it was anywhere else. */
+function cmdForget() {
+  const one = arg('session', '');
+  const all = process.argv.includes('--all');
+  if (!one && !all) {
+    console.log('  node scripts/cs.mjs forget --all              remove everything this kept');
+    console.log('  node scripts/cs.mjs forget --session <id>     remove one conversation');
+    console.log(`\n  It is all under ${WORK} and nowhere else.\n`);
+    return;
+  }
+  const target = all ? WORK : sess(one);
+  if (!fs.existsSync(target)) { console.log(`Nothing kept at ${target}`); return; }
+  fs.rmSync(target, { recursive: true, force: true });
+  console.log(`Removed ${target}.`);
+  if (all) console.log('Your own agent records are untouched: this only ever read them.');
+}
+
 function cmdStatus() {
   const tasks = allPlacements();
   if (!tasks.length) {
@@ -449,6 +476,7 @@ else if (cmd === 'why') cmdWhy(a);
 else if (cmd === 'status') cmdStatus();
 else if (cmd === 'recent') cmdRecent();
 else if (cmd === 'list') cmdList();
+else if (cmd === 'forget') cmdForget();
 else if (cmd === 'next') cmdNext();
 else {
   console.log(`The Command Scale v1.0 — take a reading of your own record.
@@ -463,7 +491,9 @@ else {
   node scripts/cs.mjs recent                             the last few tasks read
   node scripts/cs.mjs report                             the long card
   node scripts/cs.mjs why <situation>                    the words behind it
+  node scripts/cs.mjs forget --all                       take it all back
 
-Nothing here calls a model and nothing leaves this machine. The reading is
-taken by the agent running this skill; this program prepares, checks and counts.`);
+Nothing here calls a model, opens a socket or needs an account. The reading is
+taken by the agent running this skill; this program prepares, checks and counts.
+Everything it keeps is plain files under ~/.command-scale, on this machine.`);
 }
