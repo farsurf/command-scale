@@ -20,44 +20,66 @@ const esc = (s) => String(s == null ? '' : s)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 const STYLE = `
-:root{color-scheme:light dark;--ink:#16181d;--dim:#5d636e;--line:#d9dce2;--bg:#fbfbfc;--card:#fff;--held:#1b6b3a;--heldbg:#e6f4ec;--warn:#8a3d12}
-@media (prefers-color-scheme:dark){:root{--ink:#e8eaee;--dim:#98a0ad;--line:#2c3038;--bg:#101216;--card:#171a20;--held:#6fd39b;--heldbg:#12301f;--warn:#e0a074}}
+/* The publisher's own values, copied in as values. The page is recognisable
+   as the same family as mentor.farsurf.com without carrying a line of that
+   site's code: four and a half thousand lines of stylesheet and script written
+   for one conversation, a login wall and a price list have nothing to lay out
+   here, and would disagree with the site the first time either changed.
+   Their own sentences are set in the face with Han glyphs in it — a stack
+   without one sets every Chinese character in the browser's last resort,
+   visibly a different width, on the one line of the page that is theirs. */
+:root{
+  color-scheme:light dark;
+  --paper:#FAF8F4; --card:#FFFFFF; --ink:#171717; --body:#44443F; --dim:#8A8A85;
+  --line:#E6E6E2; --rule:#D9D5CC; --accent:#D8480B; --credit:#2A6B4F; --warn:#A11A1A;
+  --dark:#171717; --dark-ink:#F5F2EC; --dark-dim:#A8A29A; --dark-line:#2C2822;
+  --face:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --own:'DM Mono',ui-monospace,'SFMono-Regular',Menlo,'PingFang SC','Microsoft YaHei','Noto Sans SC',monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#121211; --card:#1B1B19; --ink:#F2F2EE; --body:#E4E4DD; --dim:#9A9A93;
+  --line:#2C2C29; --rule:#31312D; --accent:#FF6A2B; --credit:#6FD39B; --warn:#E4614F;
+  --dark:#1B1B19; --dark-ink:#F2F2EE; --dark-dim:#9A9A93; --dark-line:#2C2C29;
+}}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 ui-serif,Georgia,"Times New Roman",serif;padding:2.5rem 1.25rem 5rem}
+body{margin:0;background:var(--paper);color:var(--body);font:16px/1.6 var(--face);padding:2.5rem 1.25rem 5rem}
 .wrap{max-width:46rem;margin:0 auto}
-h1{font-size:1.45rem;line-height:1.25;margin:0 0 .2rem}
-h2{font-size:1rem;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin:2.6rem 0 .8rem;font-weight:600}
-.sub{color:var(--dim);margin:0 0 2rem}
-.level{background:var(--card);border:1px solid var(--line);border-radius:.6rem;padding:1.1rem 1.25rem}
-.level b{font-size:1.25rem}
-.level p{margin:.4rem 0 0;color:var(--dim);font-size:.94rem}
-table{border-collapse:collapse;width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9rem}
-th,td{padding:.5rem .35rem;text-align:center;border-bottom:1px solid var(--line)}
-th:first-child,td:first-child{text-align:left;font-family:inherit;white-space:nowrap}
-thead th{color:var(--dim);font-weight:600}
-td.has{background:var(--card)}
-td.held{background:var(--heldbg);color:var(--held);font-weight:700}
+h1{font-size:1.5rem;line-height:1.2;margin:0 0 .2rem;color:var(--ink);letter-spacing:-.01em}
+h2{font-family:var(--own);font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin:2.8rem 0 .9rem;font-weight:500}
+.sub{color:var(--dim);margin:0 0 2rem;font-family:var(--own);font-size:.8rem}
+.level{background:var(--dark);color:var(--dark-ink);border-radius:.5rem;padding:1.3rem 1.4rem}
+.level b{display:block;font-size:1.3rem;letter-spacing:-.01em}
+.level p{margin:.5rem 0 0;color:var(--dark-dim);font-size:.9rem}
+table{border-collapse:collapse;width:100%;font-family:var(--own);font-size:.86rem}
+th,td{padding:.55rem .35rem;text-align:center;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left;font-family:var(--face);white-space:nowrap;color:var(--ink)}
+thead th{color:var(--dim);font-weight:500;border-bottom:1px solid var(--rule)}
+td.has{color:var(--body)}
+td.held{color:var(--accent);font-weight:700}
 td.none{color:var(--line)}
-.note{color:var(--dim);font-size:.86rem}
-.task{border-top:1px solid var(--line);padding:1rem 0}
-.task h4{margin:0 0 .1rem;font-size:.98rem;font-weight:600}
-.task .when{color:var(--dim);font-size:.82rem;margin:0 0 .6rem}
-.p{margin:.7rem 0 0;padding-left:.9rem;border-left:3px solid var(--line)}
-.p .tag{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.78rem;color:var(--dim);letter-spacing:.03em}
-.p .tag em{font-style:normal;color:var(--held);font-weight:700}
-.p .tag s{text-decoration:none;color:var(--warn)}
-.p q{display:block;margin:.2rem 0 .15rem}
-.p .why{color:var(--dim);font-size:.88rem}
+.note{color:var(--dim);font-size:.84rem}
 .sit{border-top:1px solid var(--line);padding:1.2rem 0}
-.sit h3{margin:0 0 .5rem;font-size:1.02rem}
-.sit h3 span{color:var(--dim);font-weight:400}
-blockquote{margin:.6rem 0;padding:.55rem 0 .55rem .9rem;border-left:3px solid var(--line);color:var(--ink)}
-.def{margin:.55rem 0 0}
-.def b{display:block;color:var(--dim);font-size:.8rem;letter-spacing:.05em;text-transform:uppercase;font-weight:600;margin-bottom:.15rem}
+.sit h3{margin:0 0 .5rem;font-size:1rem;color:var(--ink)}
+.sit h3 span{color:var(--dim);font-weight:400;font-size:.9rem}
+blockquote{margin:.6rem 0;padding:.5rem 0 .5rem .9rem;border-left:2px solid var(--accent);
+  font-family:var(--own);font-size:.9rem;color:var(--ink)}
+.def{margin:.6rem 0 0}
+.def b{display:block;font-family:var(--own);color:var(--dim);font-size:.72rem;letter-spacing:.08em;
+  text-transform:uppercase;font-weight:500;margin-bottom:.2rem}
 ul{margin:.4rem 0;padding-left:1.1rem}
-li{margin:.25rem 0}
-footer{margin-top:3rem;border-top:1px solid var(--line);padding-top:1rem;color:var(--dim);font-size:.85rem}
-@media (max-width:30rem){body{padding:1.5rem 1rem 4rem}table{font-size:.78rem}th,td{padding:.4rem .15rem}}
+li{margin:.3rem 0}
+.task{border-top:1px solid var(--line);padding:1.1rem 0}
+.task h4{margin:0 0 .15rem;font-size:.98rem;font-weight:600;color:var(--ink)}
+.task .when{color:var(--dim);font-family:var(--own);font-size:.75rem;margin:0 0 .7rem}
+.p{margin:.8rem 0 0;padding-left:.9rem;border-left:2px solid var(--rule)}
+.p .tag{font-family:var(--own);font-size:.74rem;color:var(--dim);letter-spacing:.05em;text-transform:uppercase}
+.p .tag em{font-style:normal;color:var(--credit);font-weight:700}
+.p .tag s{text-decoration:none;color:var(--warn);font-weight:700}
+.p q{display:block;margin:.25rem 0 .2rem;font-family:var(--own);font-size:.9rem;color:var(--ink);quotes:none}
+.p .why{color:var(--dim);font-size:.86rem}
+footer{margin-top:3rem;border-top:1px solid var(--rule);padding-top:1rem;color:var(--dim);font-size:.82rem}
+code{font-family:var(--own);font-size:.85em}
+@media (max-width:30rem){body{padding:1.5rem 1rem 4rem}table{font-size:.74rem}th,td{padding:.45rem .12rem}}
 `;
 
 /** Their own sentence at the height they reached, the one the reading credited. */
@@ -132,17 +154,6 @@ export function page(st, meta = {}) {
     H.push('</div>');
   }
 
-  H.push('<h2>Coming back</h2>');
-  H.push('<ul>');
-  if (meta.moved && meta.moved.length) H.push(`<li><b>Since your last reading:</b> ${esc(meta.moved.join(' · '))}</li>`);
-  else H.push('<li>This is the first reading kept, so there is nothing yet to have moved. The next one says what changed.</li>');
-  if (meta.nextStep) H.push(`<li>${esc(meta.nextStep)}</li>`);
-  if (meta.waiting && meta.waiting.count) {
-    H.push(`<li>${meta.waiting.count} conversation${meta.waiting.count === 1 ? '' : 's'} on this machine have not been read; reading the newest ${Math.min(3, meta.waiting.count)} would take about ${meta.waiting.readings} readings.</li>`);
-  }
-  H.push(`<li>Looking at this again costs nothing: the counting is arithmetic over what is already here. Only reading a new conversation asks a model anything.</li>`);
-  H.push('</ul>');
-
   // Every placement, with the sentence it was credited for and the one line
   // saying why it sits there. This is the part of a reading that can be argued
   // with, and a reading nobody can argue with is a score. It is already on
@@ -168,6 +179,17 @@ export function page(st, meta = {}) {
       H.push('</div>');
     }
   }
+
+  H.push('<h2>Coming back</h2>');
+  H.push('<ul>');
+  if (meta.moved && meta.moved.length) H.push(`<li><b>Since your last reading:</b> ${esc(meta.moved.join(' · '))}</li>`);
+  else H.push('<li>This is the first reading kept, so there is nothing yet to have moved. The next one says what changed.</li>');
+  if (meta.nextStep) H.push(`<li>${esc(meta.nextStep)}</li>`);
+  if (meta.waiting && meta.waiting.count) {
+    H.push(`<li>${meta.waiting.count} conversation${meta.waiting.count === 1 ? '' : 's'} on this machine have not been read; reading the newest ${Math.min(3, meta.waiting.count)} would take about ${meta.waiting.readings} readings.</li>`);
+  }
+  H.push(`<li>Looking at this again costs nothing: the counting is arithmetic over what is already here. Only reading a new conversation asks a model anything.</li>`);
+  H.push('</ul>');
 
   const batches = Math.floor(tasks.length / DEPTH_BATCH);
   H.push('<h2>What this reading cannot say</h2><ul>');
