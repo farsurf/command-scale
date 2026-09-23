@@ -140,8 +140,17 @@ function candidates() {
         // would call itself newest first while showing an older conversation
         // above a newer one.
         at: (theirs[theirs.length - 1].at || theirs[0].at || '').slice(0, 10),
+        // When they first said something, so a row carries a span rather than
+        // a point. A conversation run across three days and one run in ten
+        // minutes are different things to choose between.
+        began: (theirs[0].at || '').slice(0, 10),
         turns: theirs.length,
-        opens: (theirs[0].quote || '').replace(/\s+/g, ' ').slice(0, 64),
+        // Both ends of it. One opening line is often "继续" or "接着做", which
+        // identifies nothing; what they said first and what they said last
+        // place a conversation between them, and both are mechanical — no
+        // model is asked to summarise anything here.
+        opens: (theirs[0].quote || '').replace(/\s+/g, ' ').slice(0, 96),
+        closes: (theirs[theirs.length - 1].quote || '').replace(/\s+/g, ' ').slice(0, 96),
       });
     }
   }
@@ -220,7 +229,11 @@ function cmdList() {
   console.log(`\n  ${all.length} conversation(s) not yet read${since ? ` since ${since}` : ''}${project ? ` in ${project}` : ''}. Newest first:\n`);
   shown.forEach((c, i) => {
     const one = estimate([c]).readings;
-    console.log(`  ${String(i + 1).padStart(3)}  ${c.at}  ${String(c.turns).padStart(3)} msg  ~${String(one).padStart(3)} readings  ${c.project.slice(0, 20).padEnd(20)}  ${c.opens}`);
+    const span = c.began && c.began !== c.at ? `${c.began} → ${c.at}` : c.at;
+    console.log(`  ${String(i + 1).padStart(3)}  ${span.padEnd(23)} ${String(c.turns).padStart(3)} things you said  ~${String(one).padStart(3)} readings  ${c.project.slice(0, 24)}`);
+    console.log(`       first: ${c.opens}`);
+    if (c.closes && c.closes !== c.opens) console.log(`       last:  ${c.closes}`);
+    console.log('');
   });
   const e = estimate(shown);
   console.log(`\n  Reading all ${shown.length} of these: about ${e.tasks} task(s), ${e.readings} readings.`);

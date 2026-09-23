@@ -21,12 +21,22 @@ instrument, and they are written to be applied exactly as given.
 A reading is taken for somebody. Three things are owed to them, and none of
 them is the program's to say.
 
-**Before anything is read, say what will be read and stop.** Name the
-conversations by when they happened and how they open, say how many tasks that
-comes to, say where the readings will be kept and that one command removes
-them. Then stop and let them change the selection. Reading costs a model call
-per task and cannot be undone once spent; a selection they never saw is a
-selection they cannot correct, and correcting it afterwards means paying twice.
+**Before anything is read, say what will be read and stop.** `list` gives you,
+for each conversation, when it ran, how many things they said in it, what they
+said first and what they said last, and what reading it would cost; it also
+offers whole slices with the cost of each. Put those in front of them and stop
+there. Reading costs a model call per task and cannot be undone once spent; a
+selection they never saw is a selection they cannot correct, and correcting it
+afterwards means paying twice.
+
+Describe each conversation from those two ends and nothing else, and say that
+is what you are doing. You have not read them; a summary written as though you
+had is a claim about a conversation from sixty characters of it.
+
+**Unless they have already chosen, in which case read.** Somebody who named a
+conversation, a date, a source, or what they want the reading to be about has
+made the choice the stop exists for, and stopping again asks them to make it
+twice. Say in one line what you are about to read and its cost, and go.
 
 **After each task, say one line to them**: what they were doing in that task,
 and the heights it reached. The program prints this line. Pass it on as it
