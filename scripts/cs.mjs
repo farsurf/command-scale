@@ -11,6 +11,18 @@ import path from 'path';
 import { turnsFrom, knownRecordDirs, sessionFiles } from './lib/transcripts.mjs';
 import { verifyPlacements, answerWasUnusable, standing, UNUSABLE, COLUMNS,
   SITUATION_NAMES, LEVEL_NAMES, CONFERRING } from './lib/scale.mjs';
+
+/** The two passes. They are taken separately, against separate standards, and
+ *  are blind to each other: held in one standard the fourth situation's
+ *  arrival moved the other three, on one reading in seven. */
+const PASSES = {
+  place: { file: 'reading-place', prompt: 'skill/prompts/placing.md',
+    only: ['asking', 'reacting', 'blocked'],
+    says: 'the first three situations — what should become true, what is true of what came back, and that progress has stopped' },
+  know: { file: 'reading-know', prompt: 'skill/prompts/knowing.md',
+    only: ['knowing'],
+    says: 'the fourth situation on its own — what is asked to be told' },
+};
 import { card, weakest } from './lib/report.mjs';
 
 const WORK = path.resolve(process.env.COMMAND_SCALE_DIR || '.command-scale');
@@ -135,12 +147,20 @@ function cmdNext() {
       return;
     }
     for (const t of tasks.tasks) {
-      if (!fs.existsSync(path.join(d, `placements-${t.n}.json`))) {
-        console.log(`NEXT — place one task.`);
+      for (const [name, pass] of Object.entries(PASSES)) {
+        if (fs.existsSync(path.join(d, `${pass.file}-${t.n}.json`))) continue;
+        console.log(`NEXT — read one task, pass "${name}".`);
         console.log(`  read:  ${path.join(d, `task-${t.n}.txt`)}`);
-        console.log(`  rules: skill/prompts/placing.md  (and skill/prompts/knowing.md for Question)`);
-        console.log(`  write: ${path.join(d, `reading-${t.n}.json`)}`);
-        console.log(`  then:  node scripts/cs.mjs place ${id} ${t.n}`);
+        console.log(`  rules: ${pass.prompt}`);
+        console.log(`  place: ${pass.says}`);
+        console.log(`  write: ${path.join(d, `${pass.file}-${t.n}.json`)}`);
+        console.log(`  then:  node scripts/cs.mjs ${name} ${id} ${t.n}`);
+        if (name === 'know') {
+          console.log('');
+          console.log('  Take this pass on the task alone. Do not read the answer you wrote');
+          console.log('  for the other pass: two standards in view at once moved levels');
+          console.log('  inside the first three on one reading in seven.');
+        }
         return;
       }
     }
@@ -165,20 +185,35 @@ function cmdGroup(id) {
   cmdNext();
 }
 
-function cmdPlace(id, n) {
+function cmdPass(name, id, n) {
+  const pass = PASSES[name];
   const d = sess(id);
   const tasks = read(path.join(d, 'tasks.json'), { tasks: [] }).tasks;
   const task = tasks.find((t) => String(t.n) === String(n));
   if (!task) { console.log(`No task ${n} in session ${id}`); process.exit(1); }
-  const answer = read(path.join(d, `reading-${n}.json`));
-  if (!answer) { console.log(`No reading written yet at ${path.join(d, `reading-${n}.json`)}`); process.exit(1); }
-  const { placements, rejected } = verifyPlacements(answer, task.turns);
-  write(path.join(d, `placements-${n}.json`), {
-    id: `${id}#${n}`, at: task.at, objective: answer.objective || task.objective,
-    outcome: answer.outcome || '', familiarity: answer.familiarity || '',
+  const answer = read(path.join(d, `${pass.file}-${n}.json`));
+  if (!answer) { console.log(`No reading written yet at ${path.join(d, `${pass.file}-${n}.json`)}`); process.exit(1); }
+  const { placements, rejected } = verifyPlacements(answer, task.turns, pass.only);
+  // Kept per pass, then gathered. Merged into one file as they arrive, a pass
+  // re-read after a correction would have to know what the other pass had put
+  // there, and a re-read is exactly when that is least safe.
+  write(path.join(d, `kept-${name}-${n}.json`), {
     placements, rejected, elsewhere: answer.elsewhere || [],
+    outcome: answer.outcome || '', familiarity: answer.familiarity || '',
+    objective: answer.objective || task.objective,
   });
-  console.log(`Task ${n}: ${placements.length} placement(s) kept, ${rejected.length} thrown out.`);
+  const both = Object.keys(PASSES).map((k) => read(path.join(d, `kept-${k}-${n}.json`)));
+  if (both.every(Boolean)) {
+    write(path.join(d, `placements-${n}.json`), {
+      id: `${id}#${n}`, at: task.at,
+      objective: both[0].objective || task.objective,
+      outcome: both[0].outcome, familiarity: both[0].familiarity,
+      placements: both.flatMap((b) => b.placements),
+      rejected: both.flatMap((b) => b.rejected),
+      elsewhere: both.flatMap((b) => b.elsewhere),
+    });
+  }
+  console.log(`Task ${n}, pass "${name}": ${placements.length} placement(s) kept, ${rejected.length} thrown out.`);
   for (const r of rejected) {
     const said = UNUSABLE.get(r.reason);
     console.log(`  · message ${r.message ?? '?'} ${r.column || ''}${r.rung ? ` L${r.rung}` : ''} — ${r.reason}${said ? ` (${said})` : ''}`);
@@ -244,7 +279,7 @@ function cmdWhy(which) {
 const [, , cmd, a, b] = process.argv;
 if (cmd === 'import') cmdImport();
 else if (cmd === 'group') cmdGroup(a);
-else if (cmd === 'place') cmdPlace(a, b);
+else if (cmd === 'place' || cmd === 'know') cmdPass(cmd, a, b);
 else if (cmd === 'report') cmdReport();
 else if (cmd === 'why') cmdWhy(a);
 else if (cmd === 'next') cmdNext();
@@ -254,7 +289,8 @@ else {
   node scripts/cs.mjs import [--sessions N] [--file F]   prepare what to read
   node scripts/cs.mjs next                               what to do next
   node scripts/cs.mjs group <session>                    apply a grouping
-  node scripts/cs.mjs place <session> <task>             check and keep a reading
+  node scripts/cs.mjs place <session> <task>             keep the first three situations
+  node scripts/cs.mjs know  <session> <task>             keep the fourth, read on its own
   node scripts/cs.mjs report                             the card
   node scripts/cs.mjs why <situation>                    the words behind it
 

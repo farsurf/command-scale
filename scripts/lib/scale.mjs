@@ -94,7 +94,17 @@ function elsewhereIn(answer, turns) {
  * re-wrapped, and CJK arrives with and without the odd space. Nothing else is
  * forgiven, and nothing the assistant said is ever in the searched text.
  */
-export function verifyPlacements(answer, turns) {
+/**
+ * `only` names the situations this answer was taken against.
+ *
+ * The fourth situation is read in a pass of its own, against a standard of its
+ * own, and the two passes are blind to each other. Held in one standard the
+ * fourth's arrival moved the other three — the same words, the same model, and
+ * levels inside the three drifted on one reading in seven. So an answer is
+ * checked against the situations it was asked for, and a placement naming any
+ * other is a placement from a pass that was not taken.
+ */
+export function verifyPlacements(answer, turns, only = COLUMNS) {
   const kept = [];
   const rejected = [];
   const placements = (answer && answer.placements) || [];
@@ -104,8 +114,18 @@ export function verifyPlacements(answer, turns) {
     // been an attempt to say anything. Treated as malformed, a task made
     // entirely of those could never be finished, and the run would stop on the
     // one kind of task the standard says to expect.
+    // A pass over a task where nothing belongs to its situations comes back
+    // empty and that is an answer, not a fault — the fourth situation is empty
+    // in most tasks that made something, and the first three are empty in a
+    // task whose every message asked to be told.
     const anyInput = (turns || []).some((t) => !t.notInput);
-    return anyInput
+    // Naming every message as belonging to the other pass IS an answer, and
+    // the commonest one: most tasks that made something ask to be told
+    // nothing, and a task whose every message asked to be told makes nothing.
+    // Read as malformed, a pass would be sent back to write again for having
+    // correctly said that none of this is its business.
+    const named = ((answer && answer.elsewhere) || []).length > 0;
+    return anyInput && !named
       ? { placements: [], rejected: [{ reason: 'no placements in the answer' }] }
       : { placements: [], rejected: [] };
   }
@@ -114,24 +134,32 @@ export function verifyPlacements(answer, turns) {
     const idx = Number(p && p.message);
     const turn = Number.isInteger(idx) && idx >= 1 && idx <= turns.length ? turns[idx - 1] : null;
     if (!turn) { rejected.push({ ...p, reason: 'no such message' }); continue; }
-    // `elsewhere` is the first three situations saying that a message's whole
-    // ask is to be told something — which is the Question situation's subject,
-    // not a reason to drop the Question situation's own placement. Applied to
-    // all four it threw away every placement the fourth standard made, and the
-    // fourth situation came back empty from every conversation that had one.
-    if (elsewhere.has(idx) && String(p.column) !== 'knowing') {
+    // Each pass answers its own `elsewhere`, and each list voids the placements
+    // of the pass that wrote it: the three situations naming a message whose
+    // whole ask is to be told something, and the fourth naming one whose whole
+    // ask belongs to the other three. A reader asked "where does this sit" and
+    // given no way to say "nowhere" finds somewhere for everything, so the
+    // naming is what stands.
+    if (elsewhere.has(idx)) {
       rejected.push({ message: idx, column: String(p.column || ''), rung: Number(p.rung),
         cite: String(p.cite || '').trim(), reason: CONTRADICTED });
       continue;
     }
     const rung = Number(p.rung);
-    const column = String(p.column || '');
+    // A pass over a single situation is not asked to name it: its whole answer
+    // is that situation, and the standard it was taken against says so in its
+    // own first line. The situation is stamped here from the pass instead.
+    // Required of it, every placement the fourth standard makes arrives
+    // without one and is thrown out as out of range — which is the fourth
+    // situation coming back empty from every conversation that had one, with
+    // nothing on the card to say it had happened.
+    const column = String(p.column || (only.length === 1 ? only[0] : ''));
     // Whole, and never above the fifth: the sixth is about varying how much
     // they specify across many tasks and cannot be placed inside one message.
     // Out of range is reported and dropped, never clamped — offered as a
     // choice, the top of a ladder becomes where anything substantive but
     // unmatched goes.
-    if (!COLUMNS.includes(column) || !(Number.isInteger(rung) && rung >= 1 && rung <= 5)) {
+    if (!only.includes(column) || !(Number.isInteger(rung) && rung >= 1 && rung <= 5)) {
       rejected.push({ message: idx, column, rung, reason: 'situation or level out of range' });
       continue;
     }

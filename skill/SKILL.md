@@ -31,12 +31,30 @@ write. There are exactly two things you ever write:
 `prompts/grouping.md` exactly, and write the JSON that prompt specifies. Then
 `node scripts/cs.mjs group <session>`.
 
-**A reading**, one per task. Read the task it names, apply `prompts/placing.md`
-for the first three situations and `prompts/knowing.md` for the fourth, and
-write the JSON those prompts specify — one object carrying `placements` and
-`elsewhere` together. Then `node scripts/cs.mjs place <session> <task>`.
+**A reading**, twice per task, in two passes that are blind to each other.
 
-When there is nothing left: `node scripts/cs.mjs report`.
+The first pass applies `prompts/placing.md` and places the first three
+situations. The second applies `prompts/knowing.md` and places the fourth on
+its own. Each writes the JSON its own prompt specifies, to its own file, and
+each carries its own `elsewhere` — the messages whose whole ask belongs to the
+standard the other pass holds. An `elsewhere` entry voids the placements of the
+pass that wrote it, which is what keeps a question from being counted as a
+request and a request from being counted as a question.
+
+**Take the second pass without the first answer in view.** Held in one standard,
+the fourth situation's arrival moved the other three: the same words, the same
+model, and levels inside the first three drifted on one reading in seven. Two
+passes over one input cost one more reading and leave the first three exactly
+the reading they were.
+
+`node scripts/cs.mjs place <session> <task>` keeps the first pass;
+`node scripts/cs.mjs know <session> <task>` keeps the second. When there is
+nothing left: `node scripts/cs.mjs report`.
+
+A pass that finds nothing of its own in a task answers with no placements and
+an `elsewhere` naming what it passed over. That is the commonest answer there
+is — most tasks that made something ask to be told nothing — and it is an
+answer, not a fault.
 
 ## What the program will refuse
 
