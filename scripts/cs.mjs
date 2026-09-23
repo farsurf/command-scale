@@ -135,14 +135,24 @@ function candidates() {
 }
 
 /** What a run will cost, in the only units that mean anything here: how many
- *  readings the agent has to take. Estimated from their messages, because how
- *  many tasks a conversation holds is not known until it has been grouped. */
+ *  readings the agent has to take.
+ *
+ *  Estimated from the number of their messages, because how many tasks a
+ *  conversation holds is not known until it has been grouped. The ratio is
+ *  this implementation's own guess and nothing in the standard fixes it, so
+ *  what is printed is called an estimate everywhere it appears. */
 const PER_TASK_PASSES = 2;
-const estimate = (list) => {
-  const turns = list.reduce((n, c) => n + c.turns, 0);
-  const tasks = Math.max(list.length, Math.ceil(turns / 3));
-  return { tasks, readings: tasks * PER_TASK_PASSES + list.length };
+/** One conversation's estimate. A set's is the sum of its parts, so that a row
+ *  and the total under it never disagree — rounded once per conversation and
+ *  then added, three rows of five cannot add up to eleven. */
+const estimateOne = (c) => {
+  const tasks = Math.max(1, Math.ceil(c.turns / 3));
+  return { tasks, readings: tasks * PER_TASK_PASSES + 1 };
 };
+const estimate = (list) => list.reduce((a, c) => {
+  const one = estimateOne(c);
+  return { tasks: a.tasks + one.tasks, readings: a.readings + one.readings };
+}, { tasks: 0, readings: 0 });
 
 function cmdList() {
   const since = arg('since', '');
@@ -155,7 +165,8 @@ function cmdList() {
   if (!shown.length) { console.log('Nothing new to read.'); return; }
   console.log(`\n  ${all.length} conversation(s) not yet read${since ? ` since ${since}` : ''}${project ? ` in ${project}` : ''}. Newest first:\n`);
   shown.forEach((c, i) => {
-    console.log(`  ${String(i + 1).padStart(3)}  ${c.at}  ${String(c.turns).padStart(3)} msg  ${c.project.slice(0, 22).padEnd(22)}  ${c.opens}`);
+    const one = estimate([c]).readings;
+    console.log(`  ${String(i + 1).padStart(3)}  ${c.at}  ${String(c.turns).padStart(3)} msg  ~${String(one).padStart(3)} readings  ${c.project.slice(0, 20).padEnd(20)}  ${c.opens}`);
   });
   const e = estimate(shown);
   console.log(`\n  Reading all ${shown.length}: about ${e.tasks} task(s), ${e.readings} readings for your agent to take.`);
@@ -192,9 +203,8 @@ function cmdImport() {
       all = all.filter((_, i) => want.has(i + 1));
     } else if (budget > 0) {
       // Bounded by what it will cost rather than by how many conversations it
-      // is. One conversation of a hundred and fifty messages costs more than
-      // twenty short ones, and somebody choosing how much to spend is choosing
-      // readings, not files.
+      // is: one long conversation can cost more than many short ones, and
+      // somebody choosing how much to spend is choosing readings, not files.
       // Newest first, skipping any that would take the total past the budget
       // rather than stopping at the first one that does: a single long
       // conversation at the top would otherwise either blow the budget or hide
@@ -212,8 +222,8 @@ function cmdImport() {
       all = picked;
     } else {
       // A handful by default, newest first. A first run that read everything
-      // would cost hours before it said anything, and the standard's floor
-      // means the answer over a handful is the same shape as the answer over
+      // would cost a long time before it said anything, and under the floor
+      // the answer over a handful is the same shape as the answer over
       // everything: a placement, said as one.
       all = all.slice(0, howMany);
     }

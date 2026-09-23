@@ -1,9 +1,9 @@
 // The card. Arithmetic in, sentences out; nothing is decided here.
 //
 // Two things it must never do. It must not print a level over fewer samples
-// than the standard's floor — a rate over four occasions is a fact about those
-// four — and it must not print a number without the sentence that says what
-// the number is a claim about.
+// than the floor §5.3 requires and this implementation set — a rate over four
+// occasions is a fact about those four — and it must not print a number
+// without the sentence that says what the number is a claim about.
 import { LEVEL_NAMES, SITUATION_NAMES, COLUMNS, CONFERRING, KNOWING_CONFERS_FROM,
   NEED, PASS, WARN, DROP, SHOW_RATE, DEPTH_BATCH, DEPTH_NEED } from './scale.mjs';
 import { rungDefinitions } from './rungs.mjs';
@@ -118,7 +118,8 @@ export function card(st, meta = {}) {
   L.push('  · Question is placed and recorded and confers nothing, because nothing');
   L.push('    here arranges practice in it (B.2 "Conferring"). This implementation');
   L.push(`    states its conferring date as ${KNOWING_CONFERS_FROM || 'never'}.`);
-  L.push(`  · Under ${SHOW_RATE} occasions no rate is printed at all.`);
+  L.push(`  · Under ${SHOW_RATE} occasions no rate is printed at all — §5.3 requires`);
+  L.push(`    a floor and leaves its height open; ${SHOW_RATE} is this implementation's own value.`);
   L.push('  · A reading over few tasks is a placement, not a measurement (§10).');
   L.push('');
   L.push(`  Thresholds in force: n=${NEED}, credit at ${pct(PASS)}, failing under ${pct(WARN)},`);

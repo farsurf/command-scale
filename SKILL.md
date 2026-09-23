@@ -32,10 +32,11 @@ node scripts/cs.mjs next          # what to do, one step at a time
 `status`, `recent`, `why` and `report` are arithmetic over what is already on
 disk. Say so when somebody asks how much checking their level costs.
 
-**Never read their whole history unasked.** A long conversation can cost many
-times what a short one does, and the difference is not the message count.
-`list` prints what each one would cost before anything is spent; `--budget N`
-takes conversations newest first while they fit, and refuses rather than
+**Never read their whole history unasked.** `list` prints, for every
+conversation waiting and for the set as a whole, an estimate of how many
+readings it would take — estimated from how many messages they sent, by a ratio
+this implementation guessed and the standard does not fix. `--budget N` takes
+conversations newest first while they fit, and refuses rather than
 overrunning. If they have not said how much to spend, read
 a few of the newest and say plainly that this is a placement over a few tasks.
 
@@ -140,8 +141,9 @@ third part of the method and no part of this instrument.
 ## What this reading cannot say, and must not imply
 
 **L6 Myth is not read here.** It is read across batches of ten closed tasks,
-three batches at least (A.5). `prompts/depth.md` is the reading for it and the
-program does not invoke it until there is enough to invoke it on.
+three batches at least (A.5). `prompts/depth.md` is the reading for it; this
+program does not take that reading at all. It counts the batches and says on
+the card how many there are and how many are needed.
 
 **Question confers nothing.** It is placed and recorded. It begins to confer
 one month after an implementation begins to arrange practice in it, on a single

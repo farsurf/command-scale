@@ -39,8 +39,8 @@ export const DROP = 0.60;
 
 /** The sample floor: under this many occasions no rate is printed, because a
  *  rate over four occasions is a fact about those four. §5.3 requires a floor
- *  and does not fix its height, so this number is this implementation's own and
- *  is stated as its own wherever it is shown. */
+ *  and does not fix its height, so this number is this implementation's own,
+ *  and every place that prints it says whose it is. */
 export const SHOW_RATE = 5;
 
 /** The sixth level is read across batches of closed tasks, never from one
@@ -120,13 +120,11 @@ export function verifyPlacements(answer, turns, only = COLUMNS) {
     // entirely of those could never be finished, and the run would stop on the
     // one kind of task the standard says to expect.
     // A pass over a task where nothing belongs to its situations comes back
-    // empty and that is an answer, not a fault — the fourth situation is empty
-    // in most tasks that made something, and the first three are empty in a
-    // task whose every message asked to be told.
+    // empty, and that is an answer rather than a fault.
     const anyInput = (turns || []).some((t) => !t.notInput);
-    // Naming every message as belonging to the other pass IS an answer, and
-    // the commonest one: most tasks that made something ask to be told
-    // nothing, and a task whose every message asked to be told makes nothing.
+    // Naming every message as belonging to the other pass IS an answer: this
+    // pass was asked where these messages sit on its own standard and said
+    // that none of them do.
     // Read as malformed, a pass would be sent back to write again for having
     // correctly said that none of this is its business.
     const named = ((answer && answer.elsewhere) || []).length > 0;
