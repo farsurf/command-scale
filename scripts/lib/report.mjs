@@ -112,7 +112,7 @@ export function card(st, meta = {}) {
   L.push('');
 
   L.push('  WHAT THIS READING CANNOT SAY');
-  L.push(`  · L6 Myth is read across batches of ${DEPTH_BATCH} closed tasks, ${DEPTH_NEED} batches at least.`);
+  L.push(`  · L6 Myth is read across batches of ${DEPTH_BATCH} closed tasks, ${DEPTH_NEED} batches at least (A.5).`);
   const batches = Math.floor(tasks / DEPTH_BATCH);
   L.push(`    You have ${batches} full batch${batches === 1 ? '' : 'es'}; ${DEPTH_NEED} are needed. Not read here.`);
   L.push('  · Question is placed and recorded and confers nothing, because nothing');
@@ -140,9 +140,10 @@ export function card(st, meta = {}) {
  * nothing is known there yet, and calling it their weakest says something
  * about them that nothing supports.
  *
- * So standing is compared only where there is enough to compare (§5.3's floor,
- * for the same reason a rate is not printed under it), and thinness is
- * reported separately and always.
+ * So standing is compared only where there is enough to compare — the floor
+ * §5.3 requires, at the height this implementation set, for the same reason a
+ * rate is not printed under it — and thinness is reported separately and
+ * always.
  */
 export function findings(st) {
   const lows = [];
@@ -241,7 +242,7 @@ export function grid(st, meta = {}) {
     }
     L.push('');
   }
-  L.push(`  ${st.level ? `held: L${st.level} ${LEVEL_NAMES[st.level]}` : 'held: nothing yet'} — a height counts when ${NEED} occasions reach it and ${Math.ceil(NEED * PASS)} are met (* = held)`);
+  L.push(`  ${st.level ? `held: L${st.level} ${LEVEL_NAMES[st.level]}` : 'held: nothing yet'} — a height counts when ${NEED} occasions reach it and ${Math.ceil(NEED * PASS)} are met (§5.3; * = held)`);
   const f = findings(st);
   L.push(`  ${lowestLine(f)}`);
   L.push(`  ${thinnestLine(f)}`);
@@ -274,9 +275,10 @@ const occasions = (side) => (side ? Object.values(side.cells || {}).reduce((n, [
  *
  * Three kinds of movement and they are not the same thing: a level taken or
  * given back, a height reached for the first time, and evidence arriving where
- * there was not enough of it. The third is most of what happens week to week,
- * and a line that only reported the first two said "nothing changed" to
- * somebody whose thinnest situation had just doubled.
+ * there was not enough of it. Reporting only the first two says nothing
+ * changed for as long as a situation is still under the floor or short of the
+ * sample the standard asks for, which is exactly while the counting is being
+ * built up.
  */
 export function movement(prev, now) {
   if (!prev) return [];

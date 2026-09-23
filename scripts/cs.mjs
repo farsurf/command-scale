@@ -221,10 +221,11 @@ function cmdImport() {
       }
       all = picked;
     } else {
-      // A handful by default, newest first. A first run that read everything
-      // would cost a long time before it said anything, and under the floor
-      // the answer over a handful is the same shape as the answer over
-      // everything: a placement, said as one.
+      // A handful by default, newest first, and said as what §10 says it is: a
+      // reading over few tasks is a placement rather than a measurement. A
+      // first run that read everything would spend a long time before saying
+      // anything at all, and what it would buy — crossing the floor and the
+      // sample the standard asks for — is bought as well by coming back.
       all = all.slice(0, howMany);
     }
     const e = estimate(all);

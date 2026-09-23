@@ -32,11 +32,12 @@ node scripts/cs.mjs next          # what to do, one step at a time
 `status`, `recent`, `why` and `report` are arithmetic over what is already on
 disk. Say so when somebody asks how much checking their level costs.
 
-**Never read their whole history unasked.** `list` prints, for every
-conversation waiting and for the set as a whole, an estimate of how many
-readings it would take — estimated from how many messages they sent, by a ratio
-this implementation guessed and the standard does not fix. `--budget N` takes
-conversations newest first while they fit, and refuses rather than
+**Never read their whole history unasked.** `list` says how many conversations
+are waiting altogether, then shows the newest twenty — `--limit` shows more —
+with an estimate beside each of how many readings it would take and a total for
+the ones it showed. The estimate comes from how many messages they sent, by a
+ratio this implementation guessed and the standard does not fix. `--budget N`
+takes conversations newest first while they fit, and refuses rather than
 overrunning. If they have not said how much to spend, read
 a few of the newest and say plainly that this is a placement over a few tasks.
 
