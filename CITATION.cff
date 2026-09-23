@@ -10,7 +10,7 @@ type: software
 version: "1.0"
 license: Apache-2.0
 license-url: "https://github.com/farsurf/command-scale/blob/main/LICENSE"
-url: "https://mentor.farsurf.com/whitepaper.html"
+url: "https://github.com/farsurf/command-scale/blob/main/spec/the-command-scale-v1.0.md"
 repository-code: "https://github.com/farsurf/command-scale"
 authors:
   - name: "Mentor"
@@ -36,4 +36,4 @@ preferred-citation:
     Appendix B together with Appendix A and sections 4, 5 and 9 of the paper.
     Levels: L1 Note, L2 Verse, L3 Canon, L4 Chronicle, L5 Saga, L6 Myth.
     Licensed CC BY 4.0.
-  url: "https://mentor.farsurf.com/whitepaper.html"
+  url: "https://github.com/farsurf/command-scale/blob/main/spec/the-command-scale-v1.0.md"
