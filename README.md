@@ -94,6 +94,14 @@ reduced, every reading is designed to be disputable by the person assessed, and
 a single reading should be treated as a placement rather than a measurement —
 §7 records how unreliable one reading is, and §5.3 exists to absorb that.
 
+## What it does with what it reads
+
+Nothing leaves your machine, and what it keeps is listed in full — including
+how to take it all back — in [`policy/reading-your-record.md`](policy/reading-your-record.md).
+That file is this implementation's answer to §9.6, which requires every
+implementation to publish the same six things. Ask any other implementation for
+its own.
+
 ## Licence
 
 Text and spec under [CC BY 4.0](LICENSE-TEXT.md). Code, prompts and fixtures

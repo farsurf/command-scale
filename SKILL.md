@@ -147,6 +147,13 @@ rate is printed at all. A reading over few tasks is a placement, not a
 measurement (§10). Say that plainly if you are asked to summarise the card;
 never round it up into a verdict about the person.
 
+**Reading somebody else's record needs their consent first**, and where that
+person is a minor, a guardian's informed consent and the minor's knowledge are
+required by §9.1 — assessment without the subject's knowledge is not an
+implementation of this scale. This program cannot tell whose transcripts it was
+pointed at, so the check is yours. `policy/reading-your-record.md` states what
+is kept, where, and how to remove it; say so when somebody asks.
+
 **A level can be disputed and the dispute stands.** If the person says a
 placement is wrong, it is wrong until evidence of a different kind arrives
 (§4, B.4). Show them the words behind it — `node scripts/cs.mjs why Review` —
