@@ -353,6 +353,16 @@ function cmdImport() {
     }
     const e = estimate(all);
     console.log(`Reading ${all.length} conversation(s): about ${e.tasks} task(s), ${e.readings} readings to take.`);
+    // Named, not counted. The numbers in the listing are positions in what is
+    // still unread, and that list gets shorter as conversations are read — so
+    // the number somebody said an hour ago points at a different conversation
+    // now. Printing what is actually about to be read is how that gets caught
+    // before it is paid for.
+    for (const c of all) {
+      console.log(`  · ${c.began && c.began !== c.at ? `${c.began} → ${c.at}` : c.at}  ${String(c.turns).padStart(3)} things you said  ${c.from}`);
+      console.log(`    ${c.opens}`);
+    }
+    console.log('');
     sources = all.map((c) => c.file);
   }
   let kept = 0;
