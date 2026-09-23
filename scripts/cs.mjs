@@ -579,6 +579,29 @@ function cmdRecent() {
   console.log('');
 }
 
+/** The page, built from what has been read. Used by `report`, which writes it
+ *  beside the readings, and by `page`, which writes it to standard output so
+ *  an assistant on another machine can hand it over rather than hand over a
+ *  path to a filesystem the person cannot reach. */
+function buildPage(tasks, st, { contributed, standard, moved = [], nextStep = '', waiting = [] }) {
+  return page(st, {
+    tasks, sessions: contributed, standard, questionStandard: promptFile('knowing.md'),
+    moved, nextStep,
+    waiting: { count: waiting.length, readings: waiting.length ? estimate(waiting.slice(0, 3)).readings : 0 },
+  });
+}
+
+/** The page on standard output. Nothing is written and nothing is counted
+ *  again: it is the reading that has already been taken, in the form that can
+ *  travel. */
+function cmdPage() {
+  const tasks = allPlacements();
+  if (!tasks.length) { console.log('Nothing read yet. Start with: node scripts/cs.mjs import'); process.exit(1); }
+  const st = standing(tasks);
+  const contributed = new Set(tasks.map((t) => String(t.id).split('#')[0])).size;
+  process.stdout.write(buildPage(tasks, st, { contributed, standard: readStandard(), waiting: candidates() }));
+}
+
 function cmdReport() {
   const tasks = allPlacements();
   if (!tasks.length) { console.log('Nothing read yet. Start with: node scripts/cs.mjs import'); process.exit(1); }
@@ -620,13 +643,11 @@ function cmdReport() {
   }
 
   const html = path.join(WORK, 'reading.html');
-  writeText(html, page(st, {
-    tasks, sessions: contributed, standard, questionStandard: promptFile('knowing.md'),
-    moved, nextStep,
-    waiting: { count: waiting.length, readings: waiting.length ? estimate(waiting.slice(0, 3)).readings : 0 },
-  }));
-  console.log(`  A page you can open, with the same reading laid out: ${html}`);
-  console.log('  Show it if you can render a page; otherwise open it in a browser.');
+  writeText(html, buildPage(tasks, st, { contributed, standard, moved, nextStep, waiting }));
+  console.log(`  The same reading as a page: ${html}`);
+  console.log('  That path is on the machine this ran on. If the person is not at that');
+  console.log('  machine, show them the page instead of the path — `node scripts/cs.mjs');
+  console.log('  page` writes it to standard output for you to render or hand over.');
   console.log('');
   console.log(`  Machine-readable: ${path.join(WORK, 'reading.json')}`);
   console.log('');
@@ -689,6 +710,7 @@ if (cmd === 'import') cmdImport();
 else if (cmd === 'group') cmdGroup(a);
 else if (cmd === 'place' || cmd === 'know') cmdPass(cmd, a, b);
 else if (cmd === 'report') cmdReport();
+else if (cmd === 'page') cmdPage();
 else if (cmd === 'why') cmdWhy(a);
 else if (cmd === 'status') cmdStatus();
 else if (cmd === 'recent') cmdRecent();
@@ -711,6 +733,7 @@ else {
   node scripts/cs.mjs history                            every reading so far, and what moved
   node scripts/cs.mjs recent                             the last few tasks read
   node scripts/cs.mjs report                             the long card
+  node scripts/cs.mjs page                               the same reading as a page, on stdout
   node scripts/cs.mjs why <situation>                    the words behind it
   node scripts/cs.mjs forget --all                       take it all back
 

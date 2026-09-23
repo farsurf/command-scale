@@ -39,6 +39,15 @@ td.has{background:var(--card)}
 td.held{background:var(--heldbg);color:var(--held);font-weight:700}
 td.none{color:var(--line)}
 .note{color:var(--dim);font-size:.86rem}
+.task{border-top:1px solid var(--line);padding:1rem 0}
+.task h4{margin:0 0 .1rem;font-size:.98rem;font-weight:600}
+.task .when{color:var(--dim);font-size:.82rem;margin:0 0 .6rem}
+.p{margin:.7rem 0 0;padding-left:.9rem;border-left:3px solid var(--line)}
+.p .tag{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.78rem;color:var(--dim);letter-spacing:.03em}
+.p .tag em{font-style:normal;color:var(--held);font-weight:700}
+.p .tag s{text-decoration:none;color:var(--warn)}
+.p q{display:block;margin:.2rem 0 .15rem}
+.p .why{color:var(--dim);font-size:.88rem}
 .sit{border-top:1px solid var(--line);padding:1.2rem 0}
 .sit h3{margin:0 0 .5rem;font-size:1.02rem}
 .sit h3 span{color:var(--dim);font-weight:400}
@@ -133,6 +142,32 @@ export function page(st, meta = {}) {
   }
   H.push(`<li>Looking at this again costs nothing: the counting is arithmetic over what is already here. Only reading a new conversation asks a model anything.</li>`);
   H.push('</ul>');
+
+  // Every placement, with the sentence it was credited for and the one line
+  // saying why it sits there. This is the part of a reading that can be argued
+  // with, and a reading nobody can argue with is a score. It is already on
+  // disk and costs nothing to lay out.
+  if (tasks.length) {
+    H.push('<h2>Every placement, and the words behind it</h2>');
+    H.push('<p class="note">A level above the first was credited to a sentence of yours and checked against the message it came from. If you say one of these is wrong, it is wrong until evidence of a different kind arrives.</p>');
+    const newest = [...tasks].sort((a, b) => String(b.at || '').localeCompare(String(a.at || '')));
+    for (const t of newest) {
+      const placed = (t.placements || []).slice().sort((a, b) => (a.message - b.message) || String(a.column).localeCompare(String(b.column)));
+      if (!placed.length) continue;
+      H.push('<div class="task">');
+      H.push(`<h4>${esc(t.objective || '(no objective stated)')}</h4>`);
+      H.push(`<p class="when">${esc(String(t.at || '').slice(0, 10))}${t.outcome ? ` · ${esc(t.outcome)}` : ''}</p>`);
+      for (const p of placed) {
+        const met = p.landed === 'yes' ? '<em>met</em>' : (p.landed === 'no' ? '<s>not met</s>' : 'set aside');
+        H.push('<div class="p">');
+        H.push(`<div class="tag">${esc(SITUATION_NAMES[p.column] || p.column)} · L${p.rung} ${esc(nameOf(p.column, p.rung))} · ${met}</div>`);
+        if (p.cite) H.push(`<q>${esc(p.cite.replace(/\s+/g, ' '))}</q>`);
+        if (p.why) H.push(`<div class="why">${esc(p.why)}</div>`);
+        H.push('</div>');
+      }
+      H.push('</div>');
+    }
+  }
 
   const batches = Math.floor(tasks.length / DEPTH_BATCH);
   H.push('<h2>What this reading cannot say</h2><ul>');

@@ -46,10 +46,15 @@ and a run stopped part way then hands over nothing at all.
 
 **At the end, hand over the card itself.** `report` and then `gap`, given to
 them whole. Describing what the card would say is not giving it to them.
-`report` also writes the same reading as a single page, `reading.html`, in the
-work directory, and prints its path: show that page if you can render one, and
-otherwise tell them where it is so they can open it. It loads nothing from
-anywhere and works offline.
+
+`report` also writes the same reading as a single page, `reading.html`, beside
+the readings, and `page` writes that page to standard output. It loads nothing
+from anywhere and works offline. **A filesystem path is not a way of handing
+something over unless they are at that filesystem.** An assistant often runs
+somewhere the person is not — another machine, a container, a remote
+workspace — and a path printed there opens nothing where they are sitting. So:
+render the page if you can render one, or write it where they can reach it and
+say where, or give them the card as text. Give the path as well, never instead.
 
 ## The order of work
 
