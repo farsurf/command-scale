@@ -73,9 +73,14 @@ cannot be reproduced is an opinion with a table in it.
   (assessing minors). Appendix A is normative for the Question situation. The
   rest of the paper is the argument for those appendices.
 
-Not yet in this repository: the conformance fixtures that decide whether an
-implementation may call itself conformant, and the reading of L6 Myth, which
-needs thirty closed tasks before it can be taken at all.
+- **[`conformance/`](conformance)** — cases with their answers, and a runner
+  that puts any implementation through them. `node conformance/run.mjs
+  --command "python3 mine.py"` puts yours through.
+
+Not yet in this repository: the reading of L6 Myth, which needs thirty closed
+tasks before it can be taken at all, and a second family of conformance cases
+for where a message sits on the ladder, which is worth calibrating once there
+is a second implementation to calibrate against.
 
 ## Implementing it
 

@@ -26,7 +26,9 @@ all of the following hold:
    properties in §5.3: a sample floor, a crediting rate, and a gap between the
    crediting rate and the withdrawal rate.
 4. Where it assesses minors, it publishes the list in §9.6.
-5. It passes the fixtures in `conformance/`.
+5. It passes the cases in `conformance/` — the counting and the checks, which
+   have one right answer. Where it has chosen its own threshold values under
+   §5.3 it will fail the cases that turn on them, and says which and why.
 
 A product that changes the situations, drops the citation requirement, or fails
 the fixtures may still be an excellent product. It is not conformant to this

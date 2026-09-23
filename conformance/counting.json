@@ -1,0 +1,2213 @@
+[
+ {
+  "name": "the crediting line",
+  "asks": "Ten occasions at a height with seven met: the height is held (§5.3).",
+  "input": {
+   "tasks": [
+    {
+     "id": "t1",
+     "at": "2026-01-01",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t2",
+     "at": "2026-01-02",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t3",
+     "at": "2026-01-03",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t4",
+     "at": "2026-01-04",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t5",
+     "at": "2026-01-05",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t6",
+     "at": "2026-01-06",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t7",
+     "at": "2026-01-07",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t8",
+     "at": "2026-01-08",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t9",
+     "at": "2026-01-09",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t10",
+     "at": "2026-01-10",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    }
+   ]
+  },
+  "expect": {
+   "level": 0,
+   "setAside": 0,
+   "situations": {
+    "asking": {
+     "held": 3,
+     "reached": 3,
+     "seen": 10,
+     "cells": {
+      "3": {
+       "n": 10,
+       "pos": 7,
+       "met": true,
+       "warning": false,
+       "givenBack": false
+      }
+     }
+    }
+   }
+  }
+ },
+ {
+  "name": "one short of the crediting rate",
+  "asks": "Ten occasions with six met is under 70%: nothing is held there.",
+  "input": {
+   "tasks": [
+    {
+     "id": "t1",
+     "at": "2026-01-01",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t2",
+     "at": "2026-01-02",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t3",
+     "at": "2026-01-03",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t4",
+     "at": "2026-01-04",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t5",
+     "at": "2026-01-05",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t6",
+     "at": "2026-01-06",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t7",
+     "at": "2026-01-07",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t8",
+     "at": "2026-01-08",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t9",
+     "at": "2026-01-09",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t10",
+     "at": "2026-01-10",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    }
+   ]
+  },
+  "expect": {
+   "level": 0,
+   "setAside": 0,
+   "situations": {
+    "asking": {
+     "held": 0,
+     "reached": 3,
+     "seen": 10,
+     "cells": {
+      "3": {
+       "n": 10,
+       "pos": 6,
+       "met": false,
+       "warning": false,
+       "givenBack": false
+      }
+     }
+    }
+   }
+  }
+ },
+ {
+  "name": "held, then given back",
+  "asks": "A held height whose rate falls under 60% is given back, and says so rather than reading as never held (§5.3).",
+  "input": {
+   "tasks": [
+    {
+     "id": "t1",
+     "at": "2026-01-01",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t2",
+     "at": "2026-01-02",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t3",
+     "at": "2026-01-03",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t4",
+     "at": "2026-01-04",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t5",
+     "at": "2026-01-05",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t6",
+     "at": "2026-01-06",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t7",
+     "at": "2026-01-07",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t8",
+     "at": "2026-01-08",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t9",
+     "at": "2026-01-09",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t10",
+     "at": "2026-01-10",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t11",
+     "at": "2026-01-11",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t12",
+     "at": "2026-01-12",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t13",
+     "at": "2026-01-13",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t14",
+     "at": "2026-01-14",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t15",
+     "at": "2026-01-15",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    }
+   ]
+  },
+  "expect": {
+   "level": 0,
+   "setAside": 0,
+   "situations": {
+    "asking": {
+     "held": 0,
+     "reached": 3,
+     "seen": 15,
+     "cells": {
+      "3": {
+       "n": 15,
+       "pos": 7,
+       "met": false,
+       "warning": false,
+       "givenBack": true
+      }
+     }
+    }
+   }
+  }
+ },
+ {
+  "name": "failing but still held",
+  "asks": "Between the give-back line and the failing line a held height stays held and is marked failing.",
+  "input": {
+   "tasks": [
+    {
+     "id": "t1",
+     "at": "2026-01-01",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t2",
+     "at": "2026-01-02",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t3",
+     "at": "2026-01-03",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t4",
+     "at": "2026-01-04",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t5",
+     "at": "2026-01-05",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t6",
+     "at": "2026-01-06",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t7",
+     "at": "2026-01-07",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t8",
+     "at": "2026-01-08",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t9",
+     "at": "2026-01-09",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t10",
+     "at": "2026-01-10",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t11",
+     "at": "2026-01-11",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t12",
+     "at": "2026-01-12",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t13",
+     "at": "2026-01-13",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    }
+   ]
+  },
+  "expect": {
+   "level": 0,
+   "setAside": 0,
+   "situations": {
+    "asking": {
+     "held": 3,
+     "reached": 3,
+     "seen": 13,
+     "cells": {
+      "3": {
+       "n": 13,
+       "pos": 8,
+       "met": true,
+       "warning": true,
+       "givenBack": false
+      }
+     }
+    }
+   }
+  }
+ },
+ {
+  "name": "under the sample floor",
+  "asks": "Nine occasions, every one met, is still under the sample the standard asks for.",
+  "input": {
+   "tasks": [
+    {
+     "id": "t1",
+     "at": "2026-01-01",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t2",
+     "at": "2026-01-02",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t3",
+     "at": "2026-01-03",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t4",
+     "at": "2026-01-04",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t5",
+     "at": "2026-01-05",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t6",
+     "at": "2026-01-06",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t7",
+     "at": "2026-01-07",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t8",
+     "at": "2026-01-08",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t9",
+     "at": "2026-01-09",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    }
+   ]
+  },
+  "expect": {
+   "level": 0,
+   "setAside": 0,
+   "situations": {
+    "asking": {
+     "held": 0,
+     "reached": 3,
+     "seen": 9,
+     "cells": {
+      "3": {
+       "n": 9,
+       "pos": 9,
+       "met": false,
+       "warning": false,
+       "givenBack": false
+      }
+     }
+    }
+   }
+  }
+ },
+ {
+  "name": "one sample per situation per task",
+  "asks": "A task placing three heights in one situation gives one sample, at the height reached (§6.2).",
+  "input": {
+   "tasks": [
+    {
+     "id": "t1",
+     "at": "2026-01-01",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 1,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      },
+      {
+       "message": 2,
+       "column": "asking",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      },
+      {
+       "message": 3,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    }
+   ]
+  },
+  "expect": {
+   "level": 0,
+   "setAside": 0,
+   "situations": {
+    "asking": {
+     "held": 0,
+     "reached": 3,
+     "seen": 1,
+     "cells": {
+      "3": {
+       "n": 1,
+       "pos": 1,
+       "met": false,
+       "warning": false,
+       "givenBack": false
+      }
+     }
+    }
+   }
+  }
+ },
+ {
+  "name": "the outcome is read from the first of their own",
+  "asks": "At the height reached, a message set aside is passed over and counted as an escape; the sample is the next one that was theirs (§5.4, §6.2).",
+  "input": {
+   "tasks": [
+    {
+     "id": "t1",
+     "at": "2026-01-01",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "not_theirs",
+       "becomes": "a thing exists"
+      },
+      {
+       "message": 2,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    }
+   ]
+  },
+  "expect": {
+   "level": 0,
+   "setAside": 1,
+   "situations": {
+    "asking": {
+     "held": 0,
+     "reached": 3,
+     "seen": 1,
+     "cells": {
+      "3": {
+       "n": 1,
+       "pos": 0,
+       "met": false,
+       "warning": false,
+       "givenBack": false
+      }
+     }
+    }
+   }
+  }
+ },
+ {
+  "name": "every message at that height set aside",
+  "asks": "Where every message at the height reached was set aside, the situation gets no sample and the escape is still counted.",
+  "input": {
+   "tasks": [
+    {
+     "id": "t1",
+     "at": "2026-01-01",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "not_theirs",
+       "becomes": "a thing exists"
+      }
+     ]
+    }
+   ]
+  },
+  "expect": {
+   "level": 0,
+   "setAside": 1,
+   "situations": {}
+  }
+ },
+ {
+  "name": "question confers nothing",
+  "asks": "The fourth situation is counted and shown and confers no level (B.2).",
+  "input": {
+   "tasks": [
+    {
+     "id": "t1",
+     "at": "2026-01-01",
+     "placements": [
+      {
+       "message": 1,
+       "column": "knowing",
+       "rung": 5,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    },
+    {
+     "id": "t2",
+     "at": "2026-01-02",
+     "placements": [
+      {
+       "message": 1,
+       "column": "knowing",
+       "rung": 5,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    },
+    {
+     "id": "t3",
+     "at": "2026-01-03",
+     "placements": [
+      {
+       "message": 1,
+       "column": "knowing",
+       "rung": 5,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    },
+    {
+     "id": "t4",
+     "at": "2026-01-04",
+     "placements": [
+      {
+       "message": 1,
+       "column": "knowing",
+       "rung": 5,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    },
+    {
+     "id": "t5",
+     "at": "2026-01-05",
+     "placements": [
+      {
+       "message": 1,
+       "column": "knowing",
+       "rung": 5,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    },
+    {
+     "id": "t6",
+     "at": "2026-01-06",
+     "placements": [
+      {
+       "message": 1,
+       "column": "knowing",
+       "rung": 5,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    },
+    {
+     "id": "t7",
+     "at": "2026-01-07",
+     "placements": [
+      {
+       "message": 1,
+       "column": "knowing",
+       "rung": 5,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    },
+    {
+     "id": "t8",
+     "at": "2026-01-08",
+     "placements": [
+      {
+       "message": 1,
+       "column": "knowing",
+       "rung": 5,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    },
+    {
+     "id": "t9",
+     "at": "2026-01-09",
+     "placements": [
+      {
+       "message": 1,
+       "column": "knowing",
+       "rung": 5,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    },
+    {
+     "id": "t10",
+     "at": "2026-01-10",
+     "placements": [
+      {
+       "message": 1,
+       "column": "knowing",
+       "rung": 5,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    }
+   ]
+  },
+  "expect": {
+   "level": 0,
+   "setAside": 0,
+   "situations": {
+    "knowing": {
+     "held": 5,
+     "reached": 5,
+     "seen": 10,
+     "cells": {
+      "5": {
+       "n": 10,
+       "pos": 10,
+       "met": true,
+       "warning": false,
+       "givenBack": false
+      }
+     }
+    }
+   }
+  }
+ },
+ {
+  "name": "a level is held in every conferring situation",
+  "asks": "L2 held in all three conferring situations is L2 held (B.2 Held).",
+  "input": {
+   "tasks": [
+    {
+     "id": "t1",
+     "at": "2026-01-01",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      },
+      {
+       "message": 2,
+       "column": "reacting",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      },
+      {
+       "message": 3,
+       "column": "blocked",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    },
+    {
+     "id": "t2",
+     "at": "2026-01-02",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      },
+      {
+       "message": 2,
+       "column": "reacting",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      },
+      {
+       "message": 3,
+       "column": "blocked",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    },
+    {
+     "id": "t3",
+     "at": "2026-01-03",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      },
+      {
+       "message": 2,
+       "column": "reacting",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      },
+      {
+       "message": 3,
+       "column": "blocked",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    },
+    {
+     "id": "t4",
+     "at": "2026-01-04",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      },
+      {
+       "message": 2,
+       "column": "reacting",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      },
+      {
+       "message": 3,
+       "column": "blocked",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    },
+    {
+     "id": "t5",
+     "at": "2026-01-05",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      },
+      {
+       "message": 2,
+       "column": "reacting",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      },
+      {
+       "message": 3,
+       "column": "blocked",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    },
+    {
+     "id": "t6",
+     "at": "2026-01-06",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      },
+      {
+       "message": 2,
+       "column": "reacting",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      },
+      {
+       "message": 3,
+       "column": "blocked",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    },
+    {
+     "id": "t7",
+     "at": "2026-01-07",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      },
+      {
+       "message": 2,
+       "column": "reacting",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      },
+      {
+       "message": 3,
+       "column": "blocked",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    },
+    {
+     "id": "t8",
+     "at": "2026-01-08",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      },
+      {
+       "message": 2,
+       "column": "reacting",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      },
+      {
+       "message": 3,
+       "column": "blocked",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    },
+    {
+     "id": "t9",
+     "at": "2026-01-09",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      },
+      {
+       "message": 2,
+       "column": "reacting",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      },
+      {
+       "message": 3,
+       "column": "blocked",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    },
+    {
+     "id": "t10",
+     "at": "2026-01-10",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      },
+      {
+       "message": 2,
+       "column": "reacting",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      },
+      {
+       "message": 3,
+       "column": "blocked",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    }
+   ]
+  },
+  "expect": {
+   "level": 2,
+   "setAside": 0,
+   "situations": {
+    "asking": {
+     "held": 2,
+     "reached": 2,
+     "seen": 10,
+     "cells": {
+      "2": {
+       "n": 10,
+       "pos": 10,
+       "met": true,
+       "warning": false,
+       "givenBack": false
+      }
+     }
+    },
+    "reacting": {
+     "held": 2,
+     "reached": 2,
+     "seen": 10,
+     "cells": {
+      "2": {
+       "n": 10,
+       "pos": 10,
+       "met": true,
+       "warning": false,
+       "givenBack": false
+      }
+     }
+    },
+    "blocked": {
+     "held": 2,
+     "reached": 2,
+     "seen": 10,
+     "cells": {
+      "2": {
+       "n": 10,
+       "pos": 10,
+       "met": true,
+       "warning": false,
+       "givenBack": false
+      }
+     }
+    }
+   }
+  }
+ },
+ {
+  "name": "short in one situation is not held",
+  "asks": "Two situations at L2 and a third one occasion short holds nothing.",
+  "input": {
+   "tasks": [
+    {
+     "id": "t1",
+     "at": "2026-01-01",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      },
+      {
+       "message": 2,
+       "column": "reacting",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      },
+      {
+       "message": 3,
+       "column": "blocked",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    },
+    {
+     "id": "t2",
+     "at": "2026-01-02",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      },
+      {
+       "message": 2,
+       "column": "reacting",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      },
+      {
+       "message": 3,
+       "column": "blocked",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    },
+    {
+     "id": "t3",
+     "at": "2026-01-03",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      },
+      {
+       "message": 2,
+       "column": "reacting",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      },
+      {
+       "message": 3,
+       "column": "blocked",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    },
+    {
+     "id": "t4",
+     "at": "2026-01-04",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      },
+      {
+       "message": 2,
+       "column": "reacting",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      },
+      {
+       "message": 3,
+       "column": "blocked",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    },
+    {
+     "id": "t5",
+     "at": "2026-01-05",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      },
+      {
+       "message": 2,
+       "column": "reacting",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      },
+      {
+       "message": 3,
+       "column": "blocked",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    },
+    {
+     "id": "t6",
+     "at": "2026-01-06",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      },
+      {
+       "message": 2,
+       "column": "reacting",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      },
+      {
+       "message": 3,
+       "column": "blocked",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    },
+    {
+     "id": "t7",
+     "at": "2026-01-07",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      },
+      {
+       "message": 2,
+       "column": "reacting",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      },
+      {
+       "message": 3,
+       "column": "blocked",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    },
+    {
+     "id": "t8",
+     "at": "2026-01-08",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      },
+      {
+       "message": 2,
+       "column": "reacting",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      },
+      {
+       "message": 3,
+       "column": "blocked",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    },
+    {
+     "id": "t9",
+     "at": "2026-01-09",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      },
+      {
+       "message": 2,
+       "column": "reacting",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      },
+      {
+       "message": 3,
+       "column": "blocked",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    },
+    {
+     "id": "t10",
+     "at": "2026-01-10",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      },
+      {
+       "message": 2,
+       "column": "reacting",
+       "rung": 2,
+       "cite": "x",
+       "landed": "yes"
+      }
+     ]
+    }
+   ]
+  },
+  "expect": {
+   "level": 0,
+   "setAside": 0,
+   "situations": {
+    "asking": {
+     "held": 2,
+     "reached": 2,
+     "seen": 10,
+     "cells": {
+      "2": {
+       "n": 10,
+       "pos": 10,
+       "met": true,
+       "warning": false,
+       "givenBack": false
+      }
+     }
+    },
+    "reacting": {
+     "held": 2,
+     "reached": 2,
+     "seen": 10,
+     "cells": {
+      "2": {
+       "n": 10,
+       "pos": 10,
+       "met": true,
+       "warning": false,
+       "givenBack": false
+      }
+     }
+    },
+    "blocked": {
+     "held": 0,
+     "reached": 2,
+     "seen": 9,
+     "cells": {
+      "2": {
+       "n": 9,
+       "pos": 9,
+       "met": false,
+       "warning": false,
+       "givenBack": false
+      }
+     }
+    }
+   }
+  }
+ },
+ {
+  "name": "heights are counted on their own",
+  "asks": "A height is held on its own samples; the heights under it are not filled in for it (§5.3, and the note in §5.1).",
+  "input": {
+   "tasks": [
+    {
+     "id": "t1",
+     "at": "2026-01-01",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 1,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t2",
+     "at": "2026-01-02",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 1,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t3",
+     "at": "2026-01-03",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 1,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t4",
+     "at": "2026-01-04",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 1,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t5",
+     "at": "2026-01-05",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 1,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t6",
+     "at": "2026-01-06",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 1,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t7",
+     "at": "2026-01-07",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 1,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t8",
+     "at": "2026-01-08",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 1,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t9",
+     "at": "2026-01-09",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 1,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t10",
+     "at": "2026-01-10",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 1,
+       "cite": "x",
+       "landed": "no",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t11",
+     "at": "2026-01-11",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t12",
+     "at": "2026-01-12",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t13",
+     "at": "2026-01-13",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t14",
+     "at": "2026-01-14",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t15",
+     "at": "2026-01-15",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t16",
+     "at": "2026-01-16",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t17",
+     "at": "2026-01-17",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t18",
+     "at": "2026-01-18",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t19",
+     "at": "2026-01-19",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    },
+    {
+     "id": "t20",
+     "at": "2026-01-20",
+     "placements": [
+      {
+       "message": 1,
+       "column": "asking",
+       "rung": 3,
+       "cite": "x",
+       "landed": "yes",
+       "becomes": "a thing exists"
+      }
+     ]
+    }
+   ]
+  },
+  "expect": {
+   "level": 0,
+   "setAside": 0,
+   "situations": {
+    "asking": {
+     "held": 3,
+     "reached": 3,
+     "seen": 20,
+     "cells": {
+      "1": {
+       "n": 10,
+       "pos": 0,
+       "met": false,
+       "warning": false,
+       "givenBack": false
+      },
+      "3": {
+       "n": 10,
+       "pos": 10,
+       "met": true,
+       "warning": false,
+       "givenBack": false
+      }
+     }
+    }
+   }
+  }
+ }
+]

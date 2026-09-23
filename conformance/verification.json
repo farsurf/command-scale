@@ -1,0 +1,412 @@
+[
+ {
+  "name": "a citation not in the message is thrown out",
+  "asks": "Every level above the first cites the person's own words, checked against the message it is credited to (§5.2).",
+  "input": {
+   "turns": [
+    {
+     "quote": "keep a log for each person"
+    }
+   ],
+   "answer": {
+    "placements": [
+     {
+      "message": 1,
+      "column": "asking",
+      "rung": 2,
+      "cite": "words they never wrote",
+      "becomes": "a log exists",
+      "landed": "yes"
+     }
+    ],
+    "elsewhere": []
+   },
+   "only": [
+    "asking",
+    "reacting",
+    "blocked"
+   ]
+  },
+  "expect": {
+   "kept": [],
+   "rejected": [
+    {
+     "message": 1,
+     "reason": "the words are not in their message"
+    }
+   ],
+   "malformed": false
+  }
+ },
+ {
+  "name": "spacing and case are forgiven, nothing else is",
+  "asks": "A fragment is matched with whitespace and case set aside, because quotations get re-wrapped and scripts vary.",
+  "input": {
+   "turns": [
+    {
+     "quote": "Keep   a LOG for  each person"
+    }
+   ],
+   "answer": {
+    "placements": [
+     {
+      "message": 1,
+      "column": "asking",
+      "rung": 2,
+      "cite": "keep a log for each person",
+      "becomes": "a log exists",
+      "landed": "yes"
+     }
+    ],
+    "elsewhere": []
+   },
+   "only": [
+    "asking",
+    "reacting",
+    "blocked"
+   ]
+  },
+  "expect": {
+   "kept": [
+    {
+     "message": 1,
+     "column": "asking",
+     "rung": 2
+    }
+   ],
+   "rejected": [],
+   "malformed": false
+  }
+ },
+ {
+  "name": "the first level needs no citation",
+  "asks": "At the first level the thing named is the whole of what was closed, so no fragment is required (§5.2).",
+  "input": {
+   "turns": [
+    {
+     "quote": "a quiz"
+    }
+   ],
+   "answer": {
+    "placements": [
+     {
+      "message": 1,
+      "column": "asking",
+      "rung": 1,
+      "cite": "",
+      "becomes": "a quiz exists",
+      "landed": "yes"
+     }
+    ],
+    "elsewhere": []
+   },
+   "only": [
+    "asking",
+    "reacting",
+    "blocked"
+   ]
+  },
+  "expect": {
+   "kept": [
+    {
+     "message": 1,
+     "column": "asking",
+     "rung": 1
+    }
+   ],
+   "rejected": [],
+   "malformed": false
+  }
+ },
+ {
+  "name": "a request placement with nothing becoming true is thrown out",
+  "asks": "A part that asks only to be told something has nothing this situation measures.",
+  "input": {
+   "turns": [
+    {
+     "quote": "a quiz"
+    }
+   ],
+   "answer": {
+    "placements": [
+     {
+      "message": 1,
+      "column": "asking",
+      "rung": 1,
+      "cite": "",
+      "becomes": "",
+      "landed": "yes"
+     }
+    ],
+    "elsewhere": []
+   },
+   "only": [
+    "asking",
+    "reacting",
+    "blocked"
+   ]
+  },
+  "expect": {
+   "kept": [],
+   "rejected": [
+    {
+     "message": 1,
+     "reason": "nothing becomes true"
+    }
+   ],
+   "malformed": true
+  }
+ },
+ {
+  "name": "whether it landed must be one of the three answers",
+  "asks": "§5.4 allows met, not met, and set aside, and nothing else.",
+  "input": {
+   "turns": [
+    {
+     "quote": "a quiz"
+    }
+   ],
+   "answer": {
+    "placements": [
+     {
+      "message": 1,
+      "column": "asking",
+      "rung": 1,
+      "cite": "",
+      "becomes": "a quiz exists",
+      "landed": "maybe"
+     }
+    ],
+    "elsewhere": []
+   },
+   "only": [
+    "asking",
+    "reacting",
+    "blocked"
+   ]
+  },
+  "expect": {
+   "kept": [],
+   "rejected": [
+    {
+     "message": 1,
+     "reason": "whether it landed is not one of the three answers"
+    }
+   ],
+   "malformed": true
+  }
+ },
+ {
+  "name": "no message is placed above the fifth level",
+  "asks": "The sixth is read across batches and never inside one message (§3, A.5).",
+  "input": {
+   "turns": [
+    {
+     "quote": "a quiz"
+    }
+   ],
+   "answer": {
+    "placements": [
+     {
+      "message": 1,
+      "column": "asking",
+      "rung": 6,
+      "cite": "a quiz",
+      "becomes": "a quiz exists",
+      "landed": "yes"
+     }
+    ],
+    "elsewhere": []
+   },
+   "only": [
+    "asking",
+    "reacting",
+    "blocked"
+   ]
+  },
+  "expect": {
+   "kept": [],
+   "rejected": [
+    {
+     "message": 1,
+     "reason": "situation or level out of range"
+    }
+   ],
+   "malformed": true
+  }
+ },
+ {
+  "name": "a placement naming a message that is not there is thrown out",
+  "asks": "An answer about a message the task does not hold claimed nothing about this task.",
+  "input": {
+   "turns": [
+    {
+     "quote": "a quiz"
+    }
+   ],
+   "answer": {
+    "placements": [
+     {
+      "message": 3,
+      "column": "asking",
+      "rung": 1,
+      "cite": "",
+      "becomes": "a quiz exists",
+      "landed": "yes"
+     }
+    ],
+    "elsewhere": []
+   },
+   "only": [
+    "asking",
+    "reacting",
+    "blocked"
+   ]
+  },
+  "expect": {
+   "kept": [],
+   "rejected": [
+    {
+     "message": 3,
+     "reason": "no such message"
+    }
+   ],
+   "malformed": true
+  }
+ },
+ {
+  "name": "naming a message elsewhere voids the pass that named it",
+  "asks": "A pass that says a message's whole ask belongs to the other standard has said so, and its own placement for that message does not stand.",
+  "input": {
+   "turns": [
+    {
+     "quote": "tell me what the limit is"
+    }
+   ],
+   "answer": {
+    "placements": [
+     {
+      "message": 1,
+      "column": "knowing",
+      "rung": 2,
+      "cite": "what the limit is",
+      "landed": "yes"
+     }
+    ],
+    "elsewhere": [
+     {
+      "message": 1,
+      "cite": "tell me what the limit is",
+      "why": "its whole ask is to be told"
+     }
+    ]
+   },
+   "only": [
+    "knowing"
+   ]
+  },
+  "expect": {
+   "kept": [],
+   "rejected": [
+    {
+     "message": 1,
+     "reason": "this reading also said it belongs elsewhere"
+    }
+   ],
+   "malformed": false
+  }
+ },
+ {
+  "name": "a pass over one situation need not name it",
+  "asks": "A standard that is one situation from its first line does not ask the reading to repeat which one.",
+  "input": {
+   "turns": [
+    {
+     "quote": "is the limit still five"
+    }
+   ],
+   "answer": {
+    "placements": [
+     {
+      "message": 1,
+      "rung": 3,
+      "cite": "is the limit still five",
+      "landed": "yes"
+     }
+    ],
+    "elsewhere": []
+   },
+   "only": [
+    "knowing"
+   ]
+  },
+  "expect": {
+   "kept": [
+    {
+     "message": 1,
+     "column": "knowing",
+     "rung": 3
+    }
+   ],
+   "rejected": [],
+   "malformed": false
+  }
+ },
+ {
+  "name": "nothing of mine here is an answer",
+  "asks": "A pass that finds none of its own situations in a task answers with no placements and names what it passed over.",
+  "input": {
+   "turns": [
+    {
+     "quote": "make the thing"
+    }
+   ],
+   "answer": {
+    "placements": [],
+    "elsewhere": [
+     {
+      "message": 1,
+      "cite": "make the thing",
+      "why": "its whole ask is for something to be made"
+     }
+    ]
+   },
+   "only": [
+    "knowing"
+   ]
+  },
+  "expect": {
+   "kept": [],
+   "rejected": [],
+   "malformed": false
+  }
+ },
+ {
+  "name": "an answer that names nothing at all is malformed",
+  "asks": "Where the task holds messages that were input and the answer places none and names none, nothing was claimed about the task.",
+  "input": {
+   "turns": [
+    {
+     "quote": "make the thing"
+    }
+   ],
+   "answer": {
+    "placements": [],
+    "elsewhere": []
+   },
+   "only": [
+    "knowing"
+   ]
+  },
+  "expect": {
+   "kept": [],
+   "rejected": [
+    {
+     "message": null,
+     "reason": "no placements in the answer"
+    }
+   ],
+   "malformed": true
+  }
+ }
+]
