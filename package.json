@@ -1,0 +1,12 @@
+{
+  "name": "command-scale",
+  "version": "1.0.0",
+  "description": "The Command Scale v1.0 — the standard, and an instrument that takes a reading of a person's own record against it, on their own machine.",
+  "type": "module",
+  "private": true,
+  "license": "Apache-2.0 AND CC-BY-4.0",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "conformance": "node conformance/run.mjs"
+  }
+}

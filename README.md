@@ -47,7 +47,8 @@ is installed:
 git clone https://<this repo> ~/.claude/skills/command-scale
 ```
 
-Then ask your agent to read your record against The Command Scale. It reads the
+It needs Node 18 or newer and nothing else: no dependencies, no account, no
+key. Then ask your agent to read your record against The Command Scale. It reads the
 transcripts already on your machine, takes the reading itself, and keeps what
 it found in `~/.command-scale`. No account, no key, no service: the code here
 imports three built-in modules and opens no socket at all.
