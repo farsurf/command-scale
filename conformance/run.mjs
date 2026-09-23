@@ -15,9 +15,12 @@
 import fs from 'fs';
 import path from 'path';
 import { execFileSync } from 'child_process';
+import { fileURLToPath } from 'url';
 import { standing, verifyPlacements, answerWasUnusable, COLUMNS } from '../scripts/lib/scale.mjs';
 
-const HERE = path.dirname(new URL(import.meta.url).pathname);
+// Converted rather than read off .pathname: on Windows that is /C:/… and the
+// case files are then looked for in a directory that does not exist.
+const HERE = path.dirname(fileURLToPath(import.meta.url));
 const arg = (name) => {
   const i = process.argv.indexOf(`--${name}`);
   return i > 0 && process.argv[i + 1] ? process.argv[i + 1] : '';

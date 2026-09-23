@@ -9,6 +9,14 @@
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Where this file is. Taken from the module URL through the conversion node
+// provides for it rather than from its .pathname: on Windows that property
+// hands back /C:/… with a leading slash, which path.join then treats as a
+// directory of its own, and every file this program reads beside itself — the
+// standards, the spec — silently comes back empty.
+const HERE = path.dirname(fileURLToPath(import.meta.url));
 import { turnsFrom, knownRecordDirs, sessionFiles } from './lib/transcripts.mjs';
 import { verifyPlacements, answerWasUnusable, standing, UNUSABLE, COLUMNS,
   SITUATION_NAMES, nameOf, CONFERRING } from './lib/scale.mjs';
@@ -471,7 +479,7 @@ function cmdReport() {
 }
 
 const promptFile = (name) => {
-  try { return fs.readFileSync(path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'prompts', name), 'utf8'); } catch { return ''; }
+  try { return fs.readFileSync(path.join(HERE, '..', 'prompts', name), 'utf8'); } catch { return ''; }
 };
 const readStandard = () => promptFile('placing.md');
 
@@ -482,7 +490,7 @@ const readStandard = () => promptFile('placing.md');
 function levelGlosses() {
   const out = {};
   try {
-    const spec = fs.readFileSync(path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'spec', 'the-command-scale-v1.0.md'), 'utf8');
+    const spec = fs.readFileSync(path.join(HERE, '..', 'spec', 'the-command-scale-v1.0.md'), 'utf8');
     const re = /^#### L([1-6]) \S+\s*\n+([^\n]+)/gm;
     let m;
     while ((m = re.exec(spec))) out[Number(m[1])] = m[2].trim();
