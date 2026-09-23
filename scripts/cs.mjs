@@ -388,7 +388,7 @@ function cmdStatus() {
   const sessions = new Set(tasks.map((t) => String(t.id).split('#')[0])).size;
   const now = snapshot(st, tasks.length);
   const prev = lastSnapshot();
-  console.log(grid(st, { tasks: tasks.length, sessions, delta: movement(prev, now) }));
+  console.log(grid(st, { tasks: tasks.length, sessions, delta: movement(prev, now), glosses: levelGlosses() }));
   keepSnapshot(now, prev);
 }
 
@@ -457,6 +457,21 @@ const promptFile = (name) => {
   try { return fs.readFileSync(path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'prompts', name), 'utf8'); } catch { return ''; }
 };
 const readStandard = () => promptFile('placing.md');
+
+/** Each level's own one-line gloss, read out of the normative text rather than
+ *  written down a second time. A card that carried its own wording for what a
+ *  level is would be a second vocabulary, and the one thing a standard cannot
+ *  survive is its name meaning two things. */
+function levelGlosses() {
+  const out = {};
+  try {
+    const spec = fs.readFileSync(path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'spec', 'the-command-scale-v1.0.md'), 'utf8');
+    const re = /^#### L([1-6]) \S+\s*\n+([^\n]+)/gm;
+    let m;
+    while ((m = re.exec(spec))) out[Number(m[1])] = m[2].trim();
+  } catch { /* the card prints without them */ }
+  return out;
+}
 
 function cmdHistory() {
   let entries = [];

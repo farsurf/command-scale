@@ -209,13 +209,19 @@ export function grid(st, meta = {}) {
   L.push('');
   L.push(`  THE COMMAND SCALE — where you stand${' '.repeat(Math.max(1, 34 - head.length))}${head}`);
   L.push('');
-  L.push(`  ${''.padEnd(11)}${[1, 2, 3, 4, 5].map((r) => `L${r}`.padStart(7)).join('')}`);
+  // Both rows of the head, every time. The number carries the order and the
+  // name carries which level it is; printed apart, the number is forgettable
+  // and the name has nothing to sort it by. Somebody who looks at this screen
+  // weekly should not have to go and look up which one Chronicle was.
+  const W = 10;
+  L.push(`  ${''.padEnd(11)}${[1, 2, 3, 4, 5].map((r) => `L${r}`.padStart(W)).join('')}`);
+  L.push(`  ${''.padEnd(11)}${[1, 2, 3, 4, 5].map((r) => LEVEL_NAMES[r].padStart(W)).join('')}`);
   for (const c of COLUMNS) {
     const s = st.situations[c];
     const cells = [1, 2, 3, 4, 5].map((r) => {
       const cell = s && s.rungs[r];
-      if (!cell) return '·'.padStart(7);
-      return `${cell.pos}/${cell.n}${cell.met ? '*' : ''}`.padStart(7);
+      if (!cell) return '·'.padStart(W);
+      return `${cell.pos}/${cell.n}${cell.met ? '*' : ''}`.padStart(W);
     }).join('');
     let note = '';
     if (!s) note = '   nothing in your record yet';
@@ -224,6 +230,16 @@ export function grid(st, meta = {}) {
     L.push(`  ${SITUATION_NAMES[c].padEnd(11)}${cells}${note}`);
   }
   L.push('');
+  // The whole vocabulary, in the standard's own words, on the screen somebody
+  // looks at most. A name nobody is shown the meaning of is a name nobody
+  // keeps, and six of them are what this standard is cited by.
+  if (meta.glosses) {
+    for (const r of [1, 2, 3, 4, 5, 6]) {
+      const g = meta.glosses[r];
+      if (g) L.push(`  L${r} ${LEVEL_NAMES[r].padEnd(10)} ${g}`);
+    }
+    L.push('');
+  }
   L.push(`  ${st.level ? `held: L${st.level} ${LEVEL_NAMES[st.level]}` : 'held: nothing yet'} — a height counts when ${NEED} occasions reach it and ${Math.ceil(NEED * PASS)} are met (* = held)`);
   const f = findings(st);
   L.push(`  ${lowestLine(f)}`);
