@@ -69,7 +69,7 @@ function notInputReason(body) {
 }
 
 /** One agent session file, in the JSON-lines shape Claude Code writes. */
-export function turnsFromJsonl(file) {
+export function turnsFromClaudeCode(file) {
   const out = [];
   let pending = null;
   const flush = () => { if (pending) { out.push(pending); pending = null; } };
@@ -147,19 +147,25 @@ export function turnsFromPaste(file) {
   return out;
 }
 
-/** Where this machine's agent records are, if they are anywhere this knows. */
-export function knownRecordDirs() {
-  const home = os.homedir();
-  return [path.join(home, '.claude', 'projects')].filter((d) => {
-    try { return fs.statSync(d).isDirectory(); } catch { return false; }
-  });
-}
+// Within one run, a directory is walked once and a file's opening is parsed
+// once. Both `status` and `list` ask what is on the machine and then what is
+// waiting, and without this every file under every root is opened twice for
+// the same answer.
+const walked = new Map();
+const heads = new Map();
 
 /** Every session file under a directory, newest first. */
 export function sessionFiles(dir) {
+  if (walked.has(dir)) return walked.get(dir);
+  const out = walkFor(dir);
+  walked.set(dir, out);
+  return out;
+}
+
+function walkFor(dir) {
   const found = [];
   const walk = (d, depth) => {
-    if (depth > 3) return;
+    if (depth > 4) return;
     let names = [];
     try { names = fs.readdirSync(d, { withFileTypes: true }); } catch { return; }
     for (const e of names) {
@@ -175,7 +181,197 @@ export function sessionFiles(dir) {
   return found.map((f) => f.path);
 }
 
-/** Read a file whatever shape it is in. */
+/** The first few objects of a record, for deciding whose shape it is.
+ *
+ *  Only the opening of the file is read: whose record this is shows in its
+ *  first lines, and reading a hundred whole files to find out would be the
+ *  slowest part of a command that is supposed to cost nothing. */
+function head(file) {
+  if (heads.has(file)) return heads.get(file);
+  const out = headOf(file);
+  heads.set(file, out);
+  return out;
+}
+
+function headOf(file) {
+  // Grown until a whole line is in hand rather than fixed: one message of
+  // theirs can be longer than any opening this would otherwise read, and a
+  // file whose first line is longer than the window comes back with no
+  // complete line at all — which reads as "this is nobody's record" about a
+  // record that is perfectly readable.
+  for (const bytes of [16384, 262144, Infinity]) {
+    let buf = '';
+    try {
+      if (bytes === Infinity) buf = fs.readFileSync(file, 'utf8');
+      else {
+        const fd = fs.openSync(file, 'r');
+        const b = Buffer.alloc(bytes);
+        const n = fs.readSync(fd, b, 0, bytes, 0);
+        fs.closeSync(fd);
+        buf = b.slice(0, n).toString('utf8');
+      }
+    } catch { return []; }
+    const whole = buf.split('\n');
+    // The last piece is a line cut in half unless the read reached the end.
+    if (buf.length && !buf.endsWith('\n') && bytes !== Infinity) whole.pop();
+    const out = [];
+    for (const line of whole) {
+      if (!line.trim()) continue;
+      try { out.push(JSON.parse(line)); } catch { /* not a line of ours */ }
+    }
+    if (out.length) return out;
+    if (buf.length < bytes) return out;   // the whole file was read and held nothing
+  }
+  return [];
+}
+
+/** A wall-clock stamp with its offset written beside it, as a harness that
+ *  hands the model a human-readable date writes one. Parsed without the offset
+ *  it reads as that many hours from the truth, and the listing then sorts and
+ *  prints the wrong day. */
+function stamped(s) {
+  const m = /\(UTC([+-])(\d{1,2})(?::(\d{2}))?\)/.exec(s);
+  const base = Date.parse(s.replace(/\s*\(UTC[^)]*\)/, ''));
+  if (!Number.isFinite(base)) return '';
+  if (!m) return new Date(base).toISOString();
+  const mins = ((Number(m[2]) * 60) + Number(m[3] || 0)) * (m[1] === '-' ? -1 : 1);
+  return new Date(base - (mins * 60000)).toISOString();
+}
+
+/** What a harness wrapped around the person's message, taken off again.
+ *
+ *  The envelope is the harness's and the text inside it is theirs. Left on,
+ *  every message in the record opens with a tag and is read as something the
+ *  harness inserted rather than something they typed; taken off, their words
+ *  are carried through exactly as they were. */
+function unwrap(body) {
+  const q = /<user_query>\n?([^]*?)\n?<\/user_query>/.exec(body);
+  const t = /<timestamp>([^<]*)<\/timestamp>/.exec(body);
+  return { quote: q ? q[1] : body, at: t ? stamped(t[1]) : '' };
+}
+
+/** One agent session file, in the JSON-lines shape Cursor writes. */
+export function turnsFromCursor(file) {
+  const out = [];
+  let pending = null;
+  const flush = () => { if (pending) { out.push(pending); pending = null; } };
+  // When no stamp travels with a message, when the file was last written is
+  // the only date there is. It is the same for every turn in the file, which
+  // is true rather than precise.
+  let fallback = '';
+  try { fallback = new Date(fs.statSync(file).mtimeMs).toISOString(); } catch { /* unreadable */ }
+  for (const line of fs.readFileSync(file, 'utf8').split('\n')) {
+    if (!line.trim()) continue;
+    let o;
+    try { o = JSON.parse(line); } catch { continue; }
+    const msg = o.message;
+    if (!msg || typeof msg !== 'object') continue;
+    if (o.role === 'user') {
+      if (isToolResult(msg.content)) continue;
+      const { quote, at } = unwrap(text(msg.content));
+      if (!quote.trim() || quote.trim().length < SHORTEST) continue;
+      flush();
+      pending = {
+        quote,
+        at: at || fallback,
+        back: '',
+        tools: [],
+        source: path.basename(file),
+        ...(notInputReason(quote) ? { notInput: notInputReason(quote) } : null),
+      };
+    } else if (o.role === 'assistant' && pending) {
+      const body = text(msg.content).trim();
+      const tools = toolsIn(msg.content);
+      if (tools.length) pending.tools = [...new Set([...pending.tools, ...tools])];
+      if (body && !pending.back) {
+        pending.back = body.length > REPLY_CHARS ? `${body.slice(0, REPLY_CHARS)}…` : body;
+      }
+    }
+  }
+  flush();
+  return out;
+}
+
+/**
+ * The records this knows how to read.
+ *
+ * One entry per shape, not per product: a record is claimed by what its lines
+ * look like rather than by where it was found or what wrote it, so a directory
+ * holding two kinds is read correctly and a record nobody here has seen is
+ * passed over rather than mangled. Adding another agent is adding one entry.
+ */
+export const READERS = [
+  {
+    name: 'Claude Code',
+    where: '~/.claude/projects',
+    roots: () => [path.join(os.homedir(), '.claude', 'projects')],
+    project: (file) => path.basename(path.dirname(file)),
+    claims: (objs) => objs.some((o) => o && (o.type === 'user' || o.type === 'assistant') && o.message),
+    turns: turnsFromClaudeCode,
+  },
+  {
+    name: 'Cursor',
+    where: '~/.cursor/projects',
+    roots: () => [path.join(os.homedir(), '.cursor', 'projects')],
+    // .../projects/<project>/agent-transcripts/<id>/<id>.jsonl — the session's
+    // own folder is named after the session, so the project is the folder the
+    // transcripts live under.
+    project: (file) => {
+      const parts = file.split(path.sep);
+      const i = parts.lastIndexOf('agent-transcripts');
+      return i > 0 ? parts[i - 1] : path.basename(path.dirname(file));
+    },
+    claims: (objs) => objs.some((o) => o && (o.role === 'user' || o.role === 'assistant') && o.message),
+    turns: turnsFromCursor,
+  },
+];
+
+/** Which kinds of record are on this machine, and how many of each.
+ *
+ *  Said out loud by `status` and `list`, because "nothing to read" and "your
+ *  agent keeps its record somewhere this cannot read" are different facts and
+ *  only one of them is worth doing something about. */
+export function sources() {
+  return READERS.map((r) => {
+    const dirs = r.roots().filter((d) => { try { return fs.statSync(d).isDirectory(); } catch { return false; } });
+    let files = 0;
+    for (const d of dirs) for (const f of sessionFiles(d)) if (r.claims(head(f))) files += 1;
+    return { name: r.name, where: r.where, present: dirs.length > 0, files };
+  });
+}
+
+/** Every record on this machine that something here can read. */
+export function discover() {
+  const out = [];
+  const seen = new Set();
+  for (const r of READERS) {
+    for (const root of r.roots()) {
+      let ok = false;
+      try { ok = fs.statSync(root).isDirectory(); } catch { ok = false; }
+      if (!ok) continue;
+      for (const file of sessionFiles(root)) {
+        if (seen.has(file)) continue;
+        if (!r.claims(head(file))) continue;
+        seen.add(file);
+        let at = 0;
+        try { at = fs.statSync(file).mtimeMs; } catch { /* unreadable */ }
+        out.push({ file, reader: r, from: r.name, project: r.project(file), at });
+      }
+    }
+  }
+  out.sort((a, b) => b.at - a.at);
+  return out;
+}
+
+/** Read a file whatever shape it is in.
+ *
+ *  A file named on the command line is claimed the same way one found on the
+ *  machine is — by what its lines look like — so a record copied out of its
+ *  usual place still reads, and one nobody here recognises falls through to
+ *  the plain-text reader rather than coming back empty with no reason. */
 export function turnsFrom(file) {
-  return file.endsWith('.jsonl') ? turnsFromJsonl(file) : turnsFromPaste(file);
+  if (!file.endsWith('.jsonl')) return turnsFromPaste(file);
+  const objs = head(file);
+  const r = READERS.find((x) => x.claims(objs));
+  return r ? r.turns(file) : turnsFromPaste(file);
 }

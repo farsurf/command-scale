@@ -83,10 +83,16 @@ Choosing their best conversations and leaving out the rest makes the reading a
 fact about those conversations rather than about them, and `list` says so on
 every run.
 
-**Say what this implementation can read.** It reads the session files a coding
-agent leaves on the machine, and it recognises one layout today: the JSON-lines
-files under `~/.claude/projects`. A conversation kept any other way is read with
-`--file` once it has been saved as plain text with each side's turns marked.
+**Say what this implementation can read.** It looks for the records coding
+agents leave on the machine and reads the shapes it knows — today Claude Code's
+under `~/.claude/projects` and Cursor's under `~/.cursor/projects`. A record is
+claimed by what its lines look like rather than by where it sits, so one kept
+in an unusual place still reads and one nobody here has seen is passed over
+rather than mangled. `status` and `list` both print which kinds were looked for
+and which are on this machine; pass that on, because "you have nothing to read"
+and "your agent keeps its record in a shape this does not know" are different
+facts. A conversation kept any other way is read with `--file` once it has been
+saved as plain text with each side's turns marked.
 
 `next` tells you which file to read, which rules to apply, and which file to
 write. There are exactly two things you ever write:

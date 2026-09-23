@@ -17,7 +17,7 @@ import { fileURLToPath } from 'url';
 // directory of its own, and every file this program reads beside itself — the
 // standards, the spec — silently comes back empty.
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-import { turnsFrom, knownRecordDirs, sessionFiles } from './lib/transcripts.mjs';
+import { turnsFrom, discover, sources } from './lib/transcripts.mjs';
 import { page } from './lib/page.mjs';
 import { verifyPlacements, answerWasUnusable, standing, UNUSABLE, COLUMNS,
   SITUATION_NAMES, nameOf, CONFERRING } from './lib/scale.mjs';
@@ -123,36 +123,36 @@ function judgeInput(task) {
  *  decide whether it is worth reading. */
 function candidates() {
   const out = [];
-  for (const d of knownRecordDirs()) {
-    for (const f of sessionFiles(d)) {
-      const id = path.basename(f).replace(/\.[^.]+$/, '').slice(0, 24);
-      if (fs.existsSync(path.join(sess(id), 'turns.json'))) continue;  // already prepared
-      let turns = [];
-      try { turns = turnsFrom(f); } catch { continue; }
-      const theirs = turns.filter((t) => !t.notInput);
-      if (theirs.length < 2) continue;
-      out.push({
-        file: f, id,
-        project: path.basename(path.dirname(f)),
-        // When they last said something in it, which is what "newest" means to
-        // somebody choosing what to read, and what the row prints. Ordered by
-        // anything else — when the file was last touched, say — the listing
-        // would call itself newest first while showing an older conversation
-        // above a newer one.
-        at: (theirs[theirs.length - 1].at || theirs[0].at || '').slice(0, 10),
-        // When they first said something, so a row carries a span rather than
-        // a point. A conversation run across three days and one run in ten
-        // minutes are different things to choose between.
-        began: (theirs[0].at || '').slice(0, 10),
-        turns: theirs.length,
-        // Both ends of it. One opening line is often "继续" or "接着做", which
-        // identifies nothing; what they said first and what they said last
-        // place a conversation between them, and both are mechanical — no
-        // model is asked to summarise anything here.
-        opens: (theirs[0].quote || '').replace(/\s+/g, ' ').slice(0, 96),
-        closes: (theirs[theirs.length - 1].quote || '').replace(/\s+/g, ' ').slice(0, 96),
-      });
-    }
+  for (const found of discover()) {
+    const f = found.file;
+    const id = path.basename(f).replace(/\.[^.]+$/, '').slice(0, 24);
+    if (fs.existsSync(path.join(sess(id), 'turns.json'))) continue;  // already prepared
+    let turns = [];
+    try { turns = found.reader.turns(f); } catch { continue; }
+    const theirs = turns.filter((t) => !t.notInput);
+    if (theirs.length < 2) continue;
+    out.push({
+      file: f, id,
+      from: found.from,
+      project: found.project,
+      // When they last said something in it, which is what "newest" means to
+      // somebody choosing what to read, and what the row prints. Ordered by
+      // anything else — when the file was last touched, say — the listing
+      // would call itself newest first while showing an older conversation
+      // above a newer one.
+      at: (theirs[theirs.length - 1].at || theirs[0].at || '').slice(0, 10),
+      // When they first said something, so a row carries a span rather than
+      // a point. A conversation run across three days and one run in ten
+      // minutes are different things to choose between.
+      began: (theirs[0].at || '').slice(0, 10),
+      turns: theirs.length,
+      // Both ends of it. One opening line is often "继续" or "接着做", which
+      // identifies nothing; what they said first and what they said last
+      // place a conversation between them, and both are mechanical — no
+      // model is asked to summarise anything here.
+      opens: (theirs[0].quote || '').replace(/\s+/g, ' ').slice(0, 96),
+      closes: (theirs[theirs.length - 1].quote || '').replace(/\s+/g, ' ').slice(0, 96),
+    });
   }
   out.sort((a, b) => String(b.at).localeCompare(String(a.at)));
   return out;
@@ -217,20 +217,39 @@ function slices(all) {
   return out;
 }
 
+/** What kinds of record are on this machine, said in one block.
+ *
+ *  "Nothing to read" and "your agent keeps its record in a shape this does not
+ *  know" are different facts and only one of them is the person's to act on,
+ *  so both `status` and `list` say which were looked for and which were
+ *  found. */
+function saySources() {
+  const found = sources();
+  console.log('  RECORDS ON THIS MACHINE');
+  for (const s of found) {
+    console.log(`    ${s.name.padEnd(14)} ${s.present ? `${s.files} session file(s) it can read` : 'not on this machine'}   ${s.where}`);
+  }
+  console.log('    A conversation kept anywhere else is read by saving it as plain text');
+  console.log('    with each side marked, then: node scripts/cs.mjs import --file <that file>');
+  console.log('');
+}
+
 function cmdList() {
   const since = arg('since', '');
   const project = arg('project', '');
   const limit = Number(arg('limit', 20));
   let all = candidates();
+  saySources();
   if (since) all = all.filter((c) => c.at >= since);
   if (project) all = all.filter((c) => c.project.includes(project));
+  const kinds = new Set(all.map((c) => c.from)).size;
   const shown = all.slice(0, limit);
   if (!shown.length) { console.log('Nothing new to read.'); return; }
   console.log(`\n  ${all.length} conversation(s) not yet read${since ? ` since ${since}` : ''}${project ? ` in ${project}` : ''}. Newest first:\n`);
   shown.forEach((c, i) => {
     const one = estimate([c]).readings;
     const span = c.began && c.began !== c.at ? `${c.began} → ${c.at}` : c.at;
-    console.log(`  ${String(i + 1).padStart(3)}  ${span.padEnd(23)} ${String(c.turns).padStart(3)} things you said  ~${String(one).padStart(3)} readings  ${c.project.slice(0, 24)}`);
+    console.log(`  ${String(i + 1).padStart(3)}  ${span.padEnd(23)} ${String(c.turns).padStart(3)} things you said  ~${String(one).padStart(3)} readings  ${kinds > 1 ? `${c.from} · ` : ''}${c.project.slice(0, 24)}`);
     console.log(`       first: ${c.opens}`);
     if (c.closes && c.closes !== c.opens) console.log(`       last:  ${c.closes}`);
     console.log('');
@@ -512,8 +531,10 @@ function cmdForget() {
 function cmdStatus() {
   const tasks = allPlacements();
   if (!tasks.length) {
-    console.log('\n  Nothing read yet.  node scripts/cs.mjs list   — what there is to read');
-    console.log('                     node scripts/cs.mjs import — read a few and start\n');
+    console.log('\n  Nothing read yet.\n');
+    saySources();
+    console.log('  node scripts/cs.mjs list   — what there is to read, and what each would cost');
+    console.log('  node scripts/cs.mjs import — read a few and start\n');
     return;
   }
   const st = standing(tasks);
