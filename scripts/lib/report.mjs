@@ -4,7 +4,7 @@
 // than the floor §5.3 requires and this implementation set — a rate over four
 // occasions is a fact about those four — and it must not print a number
 // without the sentence that says what the number is a claim about.
-import { LEVEL_NAMES, SITUATION_NAMES, COLUMNS, CONFERRING, KNOWING_CONFERS_FROM,
+import { LEVEL_NAMES, QUESTION_LEVEL_NAMES, nameOf, SITUATION_NAMES, COLUMNS, CONFERRING, KNOWING_CONFERS_FROM,
   NEED, PASS, WARN, DROP, SHOW_RATE, DEPTH_BATCH, DEPTH_NEED } from './scale.mjs';
 import { rungDefinitions } from './rungs.mjs';
 
@@ -39,14 +39,14 @@ const bar = (s) => '─'.repeat(s);
 function situationLine(name, s) {
   const head = `${SITUATION_NAMES[name]}`.padEnd(11);
   if (!s) return `  ${head} no occasion in this record`;
-  const held = s.held ? `L${s.held} ${LEVEL_NAMES[s.held]}` : 'nothing held yet';
+  const held = s.held ? `L${s.held} ${nameOf(name, s.held)}` : 'nothing held yet';
   const bits = [`${held.padEnd(14)}`, `reached L${s.reached}`, `${s.seen} occasion${s.seen === 1 ? '' : 's'}`];
   if (s.givenBack) bits.push(`L${s.givenBack} given back`);
   if (!s.confers) bits.push('confers nothing');
   return `  ${head} ${bits.join(' · ')}`;
 }
 
-function rungTable(s) {
+function rungTable(s, column) {
   const lines = [];
   for (const r of [1, 2, 3, 4, 5]) {
     const c = s.rungs[r];
@@ -54,7 +54,7 @@ function rungTable(s) {
     const rate = c.shownRate === null ? `${c.pos}/${c.n}` : `${c.pos}/${c.n} (${pct(c.shownRate)})`;
     const mark = c.met ? 'held' : (c.givenBack ? 'given back' : (c.n >= NEED ? 'short of the rate' : `${NEED - c.n} more to count`));
     const warn = c.warning ? '  ← failing' : '';
-    lines.push(`      L${r} ${LEVEL_NAMES[r].padEnd(10)} ${rate.padEnd(14)} ${mark}${warn}`);
+    lines.push(`      L${r} ${nameOf(column, r).padEnd(10)} ${rate.padEnd(14)} ${mark}${warn}`);
   }
   return lines;
 }
@@ -88,15 +88,15 @@ export function card(st, meta = {}) {
     const s = st.situations[c];
     if (!s) continue;
     L.push(`  ${SITUATION_NAMES[c]} — every height with a record`);
-    L.push(...rungTable(s));
+    L.push(...rungTable(s, c));
     if (s.samples < NEED) {
-      L.push(`      to hold L${s.next} ${LEVEL_NAMES[s.next]}: ${s.short} more occasion${s.short === 1 ? '' : 's'} at that height, ${st.must} of ${st.need} met`);
+      L.push(`      to hold L${s.next} ${nameOf(c, s.next)}: ${s.short} more occasion${s.short === 1 ? '' : 's'} at that height, ${st.must} of ${st.need} met`);
     }
     // What that height IS, in the standard's own words, so the number beside
     // it is a claim somebody can act on rather than a score.
     const said = meta.standard ? stepUp(c, s.next, meta.standard) : '';
     if (said) {
-      L.push(`      what L${s.next} ${LEVEL_NAMES[s.next]} is:`);
+      L.push(`      what L${s.next} ${nameOf(c, s.next)} is:`);
       L.push(...wrap(said, '        '));
     }
     L.push('');
@@ -175,7 +175,7 @@ export function lowestLine(f) {
   if (!f.standing) return 'lowest:   two situations have to have enough in them before either can be called lower';
   const names = f.standing.at.map((x) => SITUATION_NAMES[x.column]).join(' and ');
   const x = f.standing.at[0];
-  const where = x.held ? `holds L${x.held} ${LEVEL_NAMES[x.held]}` : `holds nothing yet, reaching L${x.reached} ${LEVEL_NAMES[x.reached]}`;
+  const where = x.held ? `holds L${x.held} ${nameOf(x.column, x.held)}` : `holds nothing yet, reaching L${x.reached} ${nameOf(x.column, x.reached)}`;
   return `lowest:   ${names}${f.standing.tied ? ' — level' : ''}, ${where}; ${f.standing.comparable} situation(s) have enough to compare`;
 }
 
@@ -211,13 +211,13 @@ export function grid(st, meta = {}) {
   L.push('');
   L.push(`  THE COMMAND SCALE — where you stand${' '.repeat(Math.max(1, 34 - head.length))}${head}`);
   L.push('');
-  // Both rows of the head, every time. The number carries the order and the
-  // name carries which level it is; printed apart, the number is forgettable
-  // and the name has nothing to sort it by. Somebody who looks at this screen
-  // weekly should not have to go and look up which one Chronicle was.
+  // Numbers in the head, because the numbers are what the two ladders share.
+  // The names are not shared — the fourth situation has its own (A.3) — and a
+  // single row of names above all four rows would put one ladder's name over
+  // the other's count. They go in the legend below, one ladder at a time.
   const W = 10;
   L.push(`  ${''.padEnd(11)}${[1, 2, 3, 4, 5].map((r) => `L${r}`.padStart(W)).join('')}`);
-  L.push(`  ${''.padEnd(11)}${[1, 2, 3, 4, 5].map((r) => LEVEL_NAMES[r].padStart(W)).join('')}`);
+
   for (const c of COLUMNS) {
     const s = st.situations[c];
     const cells = [1, 2, 3, 4, 5].map((r) => {
@@ -240,6 +240,8 @@ export function grid(st, meta = {}) {
       const g = meta.glosses[r];
       if (g) L.push(`  L${r} ${LEVEL_NAMES[r].padEnd(10)} ${g}`);
     }
+    L.push('');
+    L.push(`  Question is read on a ladder of its own (A.3): ${[1, 2, 3, 4, 5].map((r) => `L${r} ${QUESTION_LEVEL_NAMES[r]}`).join(' · ')}`);
     L.push('');
   }
   L.push(`  ${st.level ? `held: L${st.level} ${LEVEL_NAMES[st.level]}` : 'held: nothing yet'} — a height counts when ${NEED} occasions reach it and ${Math.ceil(NEED * PASS)} are met (§5.3; * = held)`);
@@ -289,9 +291,9 @@ export function movement(prev, now) {
     const b = now.situations[c];
     if (!b) continue;
     if (!a) { out.push(`${SITUATION_NAMES[c]} first read`); continue; }
-    if (b.held > a.held) out.push(`${SITUATION_NAMES[c]} now holds L${b.held} ${LEVEL_NAMES[b.held]}`);
-    else if (b.held < a.held) out.push(`${SITUATION_NAMES[c]} gave back L${a.held} ${LEVEL_NAMES[a.held]}`);
-    else if (b.reached > a.reached) out.push(`${SITUATION_NAMES[c]} reached L${b.reached} ${LEVEL_NAMES[b.reached]} for the first time`);
+    if (b.held > a.held) out.push(`${SITUATION_NAMES[c]} now holds L${b.held} ${nameOf(c, b.held)}`);
+    else if (b.held < a.held) out.push(`${SITUATION_NAMES[c]} gave back L${a.held} ${nameOf(c, a.held)}`);
+    else if (b.reached > a.reached) out.push(`${SITUATION_NAMES[c]} reached L${b.reached} ${nameOf(c, b.reached)} for the first time`);
     else {
       const gained = occasions(b) - occasions(a);
       if (gained > 0) out.push(`${SITUATION_NAMES[c]} +${gained} occasion${gained === 1 ? '' : 's'}`);
@@ -385,14 +387,14 @@ export function gaps(st, tasks, standard, questionStandard = '') {
       }
       if (mine) break;
     }
-    L.push(`  ${name} — you reach L${at} ${LEVEL_NAMES[at]}${CONFERRING.includes(c) ? '' : ' (recorded, not counted)'}`);
+    L.push(`  ${name} — you reach L${at} ${nameOf(c, at)}${CONFERRING.includes(c) ? '' : ' (recorded, not counted)'}`);
     if (mine) L.push(...wrap(`your words: “${mine.replace(/\s+/g, ' ')}”`, '      '));
     if (said(c, at)) {
       L.push(`      what that closed:`);
       L.push(...wrap(said(c, at), '        '));
     }
     if (next > at && said(c, next)) {
-      L.push(`      what L${next} ${LEVEL_NAMES[next]} closes that this does not:`);
+      L.push(`      what L${next} ${nameOf(c, next)} closes that this does not:`);
       L.push(...wrap(said(c, next), '        '));
     }
     L.push('');

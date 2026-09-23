@@ -37,8 +37,8 @@ are waiting altogether, then shows the newest twenty — `--limit` shows more �
 with an estimate beside each of how many readings it would take and a total for
 the ones it showed. The estimate comes from how many messages they sent, by a
 ratio this implementation guessed and the standard does not fix. `--budget N`
-takes conversations newest first while they fit, and refuses rather than
-overrunning. If they have not said how much to spend, read
+takes conversations newest first, skipping any that would take the total past
+the budget, and refuses rather than reading past it. If they have not said how much to spend, read
 a few of the newest and say plainly that this is a placement over a few tasks.
 
 **Offer the slice by when it happened, or by which source it came from** —

@@ -11,7 +11,7 @@ import os from 'os';
 import path from 'path';
 import { turnsFrom, knownRecordDirs, sessionFiles } from './lib/transcripts.mjs';
 import { verifyPlacements, answerWasUnusable, standing, UNUSABLE, COLUMNS,
-  SITUATION_NAMES, LEVEL_NAMES, CONFERRING } from './lib/scale.mjs';
+  SITUATION_NAMES, LEVEL_NAMES, nameOf, CONFERRING } from './lib/scale.mjs';
 
 /** The two passes. They are taken separately, against separate standards, and
  *  are blind to each other: held in one standard the fourth situation's
@@ -456,7 +456,7 @@ function cmdReport() {
     const name = SITUATION_NAMES[w.column];
     console.log(`  LOWEST STANDING: ${name}.`);
     if (w.why) console.log(`  ${w.why} — a level is held only where every conferring situation holds it.`);
-    else console.log(`  Holds L${w.held}${w.held ? ` ${LEVEL_NAMES[w.held]}` : ''}; ${w.short} more occasion(s) at L${w.next} would count toward the next.`);
+    else console.log(`  Holds L${w.held}${w.held ? ` ${nameOf(w.column, w.held)}` : ''}; ${w.short} more occasion(s) at L${w.next} would count toward the next.`);
     console.log('');
   }
   write(path.join(WORK, 'reading.json'), { takenAt: new Date().toISOString(), standing: st, tasks: tasks.length });
@@ -513,7 +513,7 @@ function cmdWhy(which) {
   console.log(`\n  ${name} — every placement, with the words it was credited for\n`);
   for (const t of tasks) {
     for (const p of t.placements.filter((p) => p.column === col)) {
-      console.log(`  L${p.rung} ${LEVEL_NAMES[p.rung].padEnd(10)} ${p.landed === 'yes' ? 'met    ' : (p.landed === 'no' ? 'not met' : 'set aside')}  ${t.objective || ''}`);
+      console.log(`  L${p.rung} ${nameOf(col, p.rung).padEnd(10)} ${p.landed === 'yes' ? 'met    ' : (p.landed === 'no' ? 'not met' : 'set aside')}  ${t.objective || ''}`);
       if (p.cite) console.log(`       “${p.cite.replace(/\s+/g, ' ').slice(0, 100)}”`);
       if (p.why) console.log(`       ${p.why}`);
     }

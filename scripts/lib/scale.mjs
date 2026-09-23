@@ -327,9 +327,9 @@ export function standing(tasks) {
     if (!seen) continue;
     // The height worth naming next. One above what is held, once something is
     // held; otherwise the height they are already producing at. Held + 1 alone
-    // points below wherever somebody is standing for as long as they hold
-    // nothing, which is a debt at a height they have already left behind and
-    // silence at the height they are working on.
+    // names the bottom of the ladder for as long as they hold nothing, which is
+    // a debt at a height they may already have left behind and silence at the
+    // height they are working on.
     const next = held ? Math.min(5, held + 1) : (reached || 1);
     const on = cellState(cells[column][next]);
     out.situations[column] = {
@@ -356,6 +356,17 @@ export function standing(tasks) {
 /** The names, for printing. The descriptions are the standard's; these are
  *  labels and nothing is decided from them. */
 export const LEVEL_NAMES = { 1: 'Note', 2: 'Verse', 3: 'Canon', 4: 'Chronicle', 5: 'Saga', 6: 'Myth' };
+
+/** The fourth situation is read on a ladder of its own and its levels have
+ *  their own names (A.3). The numbers are shared with the scale; the names are
+ *  not, and printing one ladder's name beside the other's number says the
+ *  level is something it is not. A.3 gives its sixth no name. */
+export const QUESTION_LEVEL_NAMES = { 1: 'Take', 2: 'Understand', 3: 'Test', 4: 'Connect', 5: 'Construct' };
+
+/** The name a level goes by in the situation it was placed in. */
+export const nameOf = (column, rung) => (column === 'knowing'
+  ? QUESTION_LEVEL_NAMES[rung] || ''
+  : LEVEL_NAMES[rung] || '');
 export const SITUATION_NAMES = {
   asking: 'Request', reacting: 'Review', blocked: 'Roadblock', knowing: 'Question',
 };
