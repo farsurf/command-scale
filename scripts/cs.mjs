@@ -599,7 +599,17 @@ function cmdPage() {
   if (!tasks.length) { console.log('Nothing read yet. Start with: node scripts/cs.mjs import'); process.exit(1); }
   const st = standing(tasks);
   const contributed = new Set(tasks.map((t) => String(t.id).split('#')[0])).size;
-  process.stdout.write(buildPage(tasks, st, { contributed, standard: readStandard(), waiting: candidates() }));
+  const html = buildPage(tasks, st, { contributed, standard: readStandard(), waiting: candidates() });
+  // --out puts it where the person can reach it, which is the folder they have
+  // open rather than a private directory on whatever machine this ran on.
+  const out = arg('out', '');
+  if (out) {
+    const to = path.resolve(out);
+    writeText(to, html);
+    console.log(`Written to ${to}. Tell them it is there; if they are not at this machine, render it instead.`);
+    return;
+  }
+  process.stdout.write(html);
 }
 
 function cmdReport() {
@@ -644,10 +654,24 @@ function cmdReport() {
 
   const html = path.join(WORK, 'reading.html');
   writeText(html, buildPage(tasks, st, { contributed, standard, moved, nextStep, waiting }));
-  console.log(`  The same reading as a page: ${html}`);
-  console.log('  That path is on the machine this ran on. If the person is not at that');
-  console.log('  machine, show them the page instead of the path — `node scripts/cs.mjs');
-  console.log('  page` writes it to standard output for you to render or hand over.');
+
+  // Addressed to whoever is running this, at the point where the reading is
+  // finished and about to be described instead of handed over. Everything
+  // above is the person's; saying so here, rather than only in the skill's
+  // text, is the difference between a reading they were given and a reading
+  // they were told about.
+  console.log('  ──  HANDING IT OVER  ──────────────────────────────────────────');
+  console.log('  Everything above is theirs. Give them the card as it stands rather');
+  console.log('  than a summary of it: a summary of a reading is one more reading.');
+  console.log('');
+  console.log('  The reading is also a page. Give them the page one of these ways,');
+  console.log('  in this order, and never a bare path — a path is on the machine this');
+  console.log('  ran on, which is often not the machine they are sitting at:');
+  console.log('    1. render it        node scripts/cs.mjs page       (the page, on stdout)');
+  console.log('    2. put it where they can open it');
+  console.log('                        node scripts/cs.mjs page --out ./reading.html');
+  console.log('                        — somewhere in the folder they have open, then say so');
+  console.log(`    3. tell them where it already is: ${html}`);
   console.log('');
   console.log(`  Machine-readable: ${path.join(WORK, 'reading.json')}`);
   console.log('');
@@ -733,7 +757,7 @@ else {
   node scripts/cs.mjs history                            every reading so far, and what moved
   node scripts/cs.mjs recent                             the last few tasks read
   node scripts/cs.mjs report                             the long card
-  node scripts/cs.mjs page                               the same reading as a page, on stdout
+  node scripts/cs.mjs page [--out ./reading.html]        the same reading as a page
   node scripts/cs.mjs why <situation>                    the words behind it
   node scripts/cs.mjs forget --all                       take it all back
 

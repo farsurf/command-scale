@@ -33,10 +33,17 @@ Describe each conversation from those two ends and nothing else, and say that
 is what you are doing. You have not read them; a summary written as though you
 had is a claim about a conversation from sixty characters of it.
 
-**Unless they have already chosen, in which case read.** Somebody who named a
-conversation, a date, a source, or what they want the reading to be about has
-made the choice the stop exists for, and stopping again asks them to make it
-twice. Say in one line what you are about to read and its cost, and go.
+**Unless they have already said WHICH, in which case read.** Naming a
+conversation, a date, a stretch of time, a source, or what the reading is to be
+about is the choice the stop exists for, and stopping again asks them to make
+it twice: say in one line what you are about to read and its cost, and go.
+
+**How many is not which.** "Read a few", "read three", "find some conversations
+and read them" all leave the choosing to you, and choosing for somebody is the
+one thing this stop is there to prevent — a reading over conversations they did
+not pick is a fact about your picking. Asking you to find conversations is
+asking you to show them what you found. Put the list up, say what each would
+cost, and let them say which.
 
 **After each task, say one line to them**: what they were doing in that task,
 and the heights it reached. The program prints this line. Pass it on as it
