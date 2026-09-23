@@ -11,7 +11,7 @@ import os from 'os';
 import path from 'path';
 import { turnsFrom, knownRecordDirs, sessionFiles } from './lib/transcripts.mjs';
 import { verifyPlacements, answerWasUnusable, standing, UNUSABLE, COLUMNS,
-  SITUATION_NAMES, LEVEL_NAMES, nameOf, CONFERRING } from './lib/scale.mjs';
+  SITUATION_NAMES, nameOf, CONFERRING } from './lib/scale.mjs';
 
 /** The two passes. They are taken separately, against separate standards, and
  *  are blind to each other: held in one standard the fourth situation's
@@ -456,7 +456,8 @@ function cmdReport() {
     const name = SITUATION_NAMES[w.column];
     console.log(`  LOWEST STANDING: ${name}.`);
     if (w.why) console.log(`  ${w.why} — a level is held only where every conferring situation holds it.`);
-    else console.log(`  Holds L${w.held}${w.held ? ` ${nameOf(w.column, w.held)}` : ''}; ${w.short} more occasion(s) at L${w.next} would count toward the next.`);
+    else if (w.held) console.log(`  Holds L${w.held} ${nameOf(w.column, w.held)}; ${w.short} more occasion(s) at L${w.next} ${nameOf(w.column, w.next)} would count toward it.`);
+    else console.log(`  Holds nothing yet; ${w.short} more occasion(s) at L${w.next} ${nameOf(w.column, w.next)} would count toward it.`);
     console.log('');
   }
   write(path.join(WORK, 'reading.json'), { takenAt: new Date().toISOString(), standing: st, tasks: tasks.length });
