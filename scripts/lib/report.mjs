@@ -142,3 +142,73 @@ export function weakest(st) {
   }
   return worst ? { column: worst.c, held: worst.s.held, next: worst.s.next, short: worst.s.short } : null;
 }
+
+/** The whole standing on one screen: four situations by five heights.
+ *
+ *  This is what somebody looks at when they want to know where they are, and
+ *  it costs nothing to print — the counting is arithmetic over what is already
+ *  on disk, so asking again asks no model anything. */
+export function grid(st, meta = {}) {
+  const L = [];
+  const head = `${meta.tasks || 0} task${meta.tasks === 1 ? '' : 's'} · ${meta.sessions || 0} conversation${meta.sessions === 1 ? '' : 's'}`;
+  L.push('');
+  L.push(`  THE COMMAND SCALE — where you stand${' '.repeat(Math.max(1, 34 - head.length))}${head}`);
+  L.push('');
+  L.push(`  ${''.padEnd(11)}${[1, 2, 3, 4, 5].map((r) => `L${r}`.padStart(7)).join('')}`);
+  for (const c of COLUMNS) {
+    const s = st.situations[c];
+    const cells = [1, 2, 3, 4, 5].map((r) => {
+      const cell = s && s.rungs[r];
+      if (!cell) return '·'.padStart(7);
+      return `${cell.pos}/${cell.n}${cell.met ? '*' : ''}`.padStart(7);
+    }).join('');
+    let note = '';
+    if (!s) note = '   nothing in your record yet';
+    else if (!CONFERRING.includes(c)) note = '   recorded, not counted';
+    else if (s.givenBack) note = `   L${s.givenBack} given back`;
+    L.push(`  ${SITUATION_NAMES[c].padEnd(11)}${cells}${note}`);
+  }
+  L.push('');
+  L.push(`  ${st.level ? `held: L${st.level} ${LEVEL_NAMES[st.level]}` : 'held: nothing yet'} — a height counts when ${NEED} occasions reach it and ${Math.ceil(NEED * PASS)} are met (* = held)`);
+  const w = weakest(st);
+  if (w) {
+    L.push(w.why
+      ? `  next:  ${SITUATION_NAMES[w.column]} — ${w.why}`
+      : `  next:  ${SITUATION_NAMES[w.column]} stands lowest; ${w.short} more occasion(s) at L${w.next} ${LEVEL_NAMES[w.next]}`);
+  }
+  if (meta.delta && meta.delta.length) {
+    L.push('');
+    L.push(`  since your last reading: ${meta.delta.join(' · ')}`);
+  }
+  L.push('');
+  return L.join('\n');
+}
+
+/** What a standing keeps, so that the next one can say what moved. */
+export function snapshot(st, tasks) {
+  const out = { at: new Date().toISOString(), tasks, level: st.level, situations: {} };
+  for (const c of COLUMNS) {
+    const s = st.situations[c];
+    out.situations[c] = s
+      ? { held: s.held, reached: s.reached, cells: Object.fromEntries(Object.entries(s.rungs).map(([r, v]) => [r, [v.pos, v.n]])) }
+      : null;
+  }
+  return out;
+}
+
+/** What moved, in the fewest words that are still true. */
+export function movement(prev, now) {
+  if (!prev) return [];
+  const out = [];
+  if (now.tasks > prev.tasks) out.push(`+${now.tasks - prev.tasks} task${now.tasks - prev.tasks === 1 ? '' : 's'}`);
+  for (const c of COLUMNS) {
+    const a = prev.situations[c];
+    const b = now.situations[c];
+    if (!b) continue;
+    if (!a) { out.push(`${SITUATION_NAMES[c]} first read`); continue; }
+    if (b.held > a.held) out.push(`${SITUATION_NAMES[c]} now holds L${b.held} ${LEVEL_NAMES[b.held]}`);
+    else if (b.held < a.held) out.push(`${SITUATION_NAMES[c]} gave back L${a.held} ${LEVEL_NAMES[a.held]}`);
+    else if (b.reached > a.reached) out.push(`${SITUATION_NAMES[c]} reached L${b.reached} ${LEVEL_NAMES[b.reached]} for the first time`);
+  }
+  return out;
+}

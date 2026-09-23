@@ -23,7 +23,7 @@ const PASSES = {
     only: ['knowing'],
     says: 'the fourth situation on its own — what is asked to be told' },
 };
-import { card, weakest } from './lib/report.mjs';
+import { card, weakest, grid, snapshot, movement } from './lib/report.mjs';
 
 const WORK = path.resolve(process.env.COMMAND_SCALE_DIR || '.command-scale');
 const read = (p, d = null) => { try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch { return d; } };
@@ -33,6 +33,16 @@ const sessionDirs = () => {
   try { return fs.readdirSync(path.join(WORK, 'sessions')).sort(); } catch { return []; }
 };
 const sess = (id) => path.join(WORK, 'sessions', id);
+
+/** Padding that counts what a terminal shows, not what JavaScript counts: a
+ *  CJK character takes two columns, and objectives arrive in whatever language
+ *  they were typed in. */
+const wide = (s) => [...String(s)].reduce((n, ch) => n + (/[\u1100-\u115F\u2E80-\uA4CF\uAC00-\uD7A3\uF900-\uFAFF\uFE30-\uFE6F\uFF00-\uFF60\uFFE0-\uFFE6]/.test(ch) ? 2 : 1), 0);
+const padWide = (s, w) => {
+  let out = '';
+  for (const ch of String(s)) { if (wide(out + ch) > w) break; out += ch; }
+  return out + ' '.repeat(Math.max(0, w - wide(out)));
+};
 
 const arg = (name, fallback) => {
   const i = process.argv.indexOf(`--${name}`);
@@ -94,20 +104,117 @@ function judgeInput(task) {
   return lines.filter(Boolean).join('\n');
 }
 
+
+/** What a conversation is, said by code alone: nothing is read by a model to
+ *  decide whether it is worth reading. */
+function candidates() {
+  const out = [];
+  for (const d of knownRecordDirs()) {
+    for (const f of sessionFiles(d)) {
+      const id = path.basename(f).replace(/\.[^.]+$/, '').slice(0, 24);
+      if (fs.existsSync(path.join(sess(id), 'turns.json'))) continue;  // already prepared
+      let turns = [];
+      try { turns = turnsFrom(f); } catch { continue; }
+      const theirs = turns.filter((t) => !t.notInput);
+      if (theirs.length < 2) continue;
+      out.push({
+        file: f, id,
+        project: path.basename(path.dirname(f)),
+        at: (theirs[0].at || '').slice(0, 10),
+        turns: theirs.length,
+        opens: (theirs[0].quote || '').replace(/\s+/g, ' ').slice(0, 64),
+      });
+    }
+  }
+  return out;
+}
+
+/** What a run will cost, in the only units that mean anything here: how many
+ *  readings the agent has to take. Estimated from their messages, because how
+ *  many tasks a conversation holds is not known until it has been grouped. */
+const PER_TASK_PASSES = 2;
+const estimate = (list) => {
+  const turns = list.reduce((n, c) => n + c.turns, 0);
+  const tasks = Math.max(list.length, Math.ceil(turns / 3));
+  return { tasks, readings: tasks * PER_TASK_PASSES + list.length };
+};
+
+function cmdList() {
+  const since = arg('since', '');
+  const project = arg('project', '');
+  const limit = Number(arg('limit', 20));
+  let all = candidates();
+  if (since) all = all.filter((c) => c.at >= since);
+  if (project) all = all.filter((c) => c.project.includes(project));
+  const shown = all.slice(0, limit);
+  if (!shown.length) { console.log('Nothing new to read.'); return; }
+  console.log(`\n  ${all.length} conversation(s) not yet read${since ? ` since ${since}` : ''}${project ? ` in ${project}` : ''}. Newest first:\n`);
+  shown.forEach((c, i) => {
+    console.log(`  ${String(i + 1).padStart(3)}  ${c.at}  ${String(c.turns).padStart(3)} msg  ${c.project.slice(0, 22).padEnd(22)}  ${c.opens}`);
+  });
+  const e = estimate(shown);
+  console.log(`\n  Reading all ${shown.length}: about ${e.tasks} task(s), ${e.readings} readings for your agent to take.`);
+  console.log('  Take some of them:  node scripts/cs.mjs import --take 1,2,5');
+  console.log('  Or a slice:         node scripts/cs.mjs import --since 2026-09-01 --sessions 5');
+  console.log('');
+  console.log('  Choose by when it happened or which project it was in. Choosing your');
+  console.log('  best conversations and leaving out the rest makes the reading a fact');
+  console.log('  about those conversations rather than about you.');
+  console.log('');
+}
+
 function cmdImport() {
-  const howMany = Number(arg('sessions', 12));
+  const howMany = Number(arg('sessions', 5));
   const file = arg('file', '');
+  const take = arg('take', '');
+  const since = arg('since', '');
+  const project = arg('project', '');
   let sources = [];
   if (file) {
     sources = [path.resolve(file)];
   } else {
-    for (const d of knownRecordDirs()) sources.push(...sessionFiles(d));
-    if (!sources.length) {
-      console.log('No agent records found on this machine. Point at a file instead:');
+    let all = candidates();
+    if (!all.length) {
+      console.log('Nothing new to read. Point at a saved conversation instead:');
       console.log('  node scripts/cs.mjs import --file <a saved conversation>');
       process.exit(1);
     }
-    sources = sources.slice(0, howMany);
+    if (since) all = all.filter((c) => c.at >= since);
+    if (project) all = all.filter((c) => c.project.includes(project));
+    const budget = Number(arg('budget', 0));
+    if (take) {
+      const want = new Set(take.split(',').map((n) => Number(n.trim())));
+      all = all.filter((_, i) => want.has(i + 1));
+    } else if (budget > 0) {
+      // Bounded by what it will cost rather than by how many conversations it
+      // is. One conversation of a hundred and fifty messages costs more than
+      // twenty short ones, and somebody choosing how much to spend is choosing
+      // readings, not files.
+      // Newest first, skipping any that would take the total past the budget
+      // rather than stopping at the first one that does: a single long
+      // conversation at the top would otherwise either blow the budget or hide
+      // every short one behind it.
+      const picked = [];
+      for (const c of all) {
+        if (estimate([...picked, c]).readings <= budget) picked.push(c);
+      }
+      if (!picked.length) {
+        const cheapest = all.reduce((a, b) => (estimate([a]).readings <= estimate([b]).readings ? a : b));
+        console.log(`Nothing fits a budget of ${budget} readings. The smallest conversation waiting`);
+        console.log(`is ${cheapest.at}, ${cheapest.turns} messages, about ${estimate([cheapest]).readings} readings.`);
+        process.exit(1);
+      }
+      all = picked;
+    } else {
+      // A handful by default, newest first. A first run that read everything
+      // would cost hours before it said anything, and the standard's floor
+      // means the answer over a handful is the same shape as the answer over
+      // everything: a placement, said as one.
+      all = all.slice(0, howMany);
+    }
+    const e = estimate(all);
+    console.log(`Reading ${all.length} conversation(s): about ${e.tasks} task(s), ${e.readings} readings to take.`);
+    sources = all.map((c) => c.file);
   }
   let kept = 0;
   const done = [];
@@ -241,6 +348,57 @@ function allPlacements() {
   return out;
 }
 
+
+/** Where things stand, on one screen, costing nothing. */
+function cmdStatus() {
+  const tasks = allPlacements();
+  if (!tasks.length) {
+    console.log('\n  Nothing read yet.  node scripts/cs.mjs list   — what there is to read');
+    console.log('                     node scripts/cs.mjs import — read a few and start\n');
+    return;
+  }
+  const st = standing(tasks);
+  const sessions = new Set(tasks.map((t) => String(t.id).split('#')[0])).size;
+  const now = snapshot(st, tasks.length);
+  const prev = lastSnapshot();
+  console.log(grid(st, { tasks: tasks.length, sessions, delta: movement(prev, now) }));
+  keepSnapshot(now, prev);
+}
+
+const HISTORY = () => path.join(WORK, 'history.jsonl');
+function lastSnapshot() {
+  try {
+    const lines = fs.readFileSync(HISTORY(), 'utf8').trim().split('\n').filter(Boolean);
+    return lines.length ? JSON.parse(lines[lines.length - 1]) : null;
+  } catch { return null; }
+}
+/** Kept only when something moved. A line per look would bury the readings
+ *  under the times somebody checked. */
+function keepSnapshot(now, prev) {
+  if (prev && prev.tasks === now.tasks) return;
+  fs.mkdirSync(path.dirname(HISTORY()), { recursive: true });
+  fs.appendFileSync(HISTORY(), `${JSON.stringify(now)}\n`);
+}
+
+/** The last few tasks read, and what each reached. */
+function cmdRecent() {
+  const n = Number(arg('n', 8));
+  const tasks = allPlacements().slice(-n).reverse();
+  if (!tasks.length) { console.log('Nothing read yet.'); return; }
+  console.log('');
+  for (const t of tasks) {
+    const tops = {};
+    for (const p of t.placements) {
+      if (!tops[p.column] || p.rung > tops[p.column].rung) tops[p.column] = p;
+    }
+    const line = Object.entries(tops)
+      .map(([c, p]) => `${SITUATION_NAMES[c]} L${p.rung}${p.landed === 'yes' ? '' : p.landed === 'no' ? ' (not met)' : ' (set aside)'}`)
+      .join(' · ');
+    console.log(`  ${String(t.at || '').slice(0, 10)}  ${padWide(String(t.objective || '(no objective)').replace(/\s+/g, ' '), 48)}  ${line || 'nothing placed'}`);
+  }
+  console.log('');
+}
+
 function cmdReport() {
   const tasks = allPlacements();
   if (!tasks.length) { console.log('Nothing read yet. Start with: node scripts/cs.mjs import'); process.exit(1); }
@@ -260,6 +418,7 @@ function cmdReport() {
     console.log('');
   }
   write(path.join(WORK, 'reading.json'), { takenAt: new Date().toISOString(), standing: st, tasks: tasks.length });
+  keepSnapshot(snapshot(st, tasks.length), lastSnapshot());
   console.log(`  Machine-readable: ${path.join(WORK, 'reading.json')}`);
   console.log('');
 }
@@ -287,16 +446,22 @@ else if (cmd === 'group') cmdGroup(a);
 else if (cmd === 'place' || cmd === 'know') cmdPass(cmd, a, b);
 else if (cmd === 'report') cmdReport();
 else if (cmd === 'why') cmdWhy(a);
+else if (cmd === 'status') cmdStatus();
+else if (cmd === 'recent') cmdRecent();
+else if (cmd === 'list') cmdList();
 else if (cmd === 'next') cmdNext();
 else {
   console.log(`The Command Scale v1.0 — take a reading of your own record.
 
-  node scripts/cs.mjs import [--sessions N] [--file F]   prepare what to read
+  node scripts/cs.mjs status                             where you stand, one screen
+  node scripts/cs.mjs list                               what there is to read, and what it costs
+  node scripts/cs.mjs import [--budget 40] [--take 1,3]  read as much as you want to spend
   node scripts/cs.mjs next                               what to do next
   node scripts/cs.mjs group <session>                    apply a grouping
   node scripts/cs.mjs place <session> <task>             keep the first three situations
   node scripts/cs.mjs know  <session> <task>             keep the fourth, read on its own
-  node scripts/cs.mjs report                             the card
+  node scripts/cs.mjs recent                             the last few tasks read
+  node scripts/cs.mjs report                             the long card
   node scripts/cs.mjs why <situation>                    the words behind it
 
 Nothing here calls a model and nothing leaves this machine. The reading is

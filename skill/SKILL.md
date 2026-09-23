@@ -20,9 +20,26 @@ Run the program and do what it says next. It is resumable: a run that stops is
 continued, never started again.
 
 ```
-node scripts/cs.mjs import        # prepare; add --sessions N or --file F
+node scripts/cs.mjs status        # where they stand — costs nothing, asks no model
+node scripts/cs.mjs list          # what is waiting, and what reading it would cost
+node scripts/cs.mjs import --budget 40    # read as much as they want to spend
 node scripts/cs.mjs next          # what to do, one step at a time
 ```
+
+**Looking costs nothing; only reading new conversations costs anything.**
+`status`, `recent`, `why` and `report` are arithmetic over what is already on
+disk. Say so when somebody asks how much checking their level costs.
+
+**Never read their whole history unasked.** A conversation of a hundred and
+fifty messages is about fifty tasks and a hundred readings. `list` prints the
+estimate; `--budget N` takes conversations newest first while they fit, and
+refuses rather than overrunning. If they have not said how much to spend, read
+a few of the newest and say plainly that this is a placement over a few tasks.
+
+**Offer the slice by when it happened or which project it was in** — `--since`,
+`--project`, `--take`. Choosing their best conversations and leaving out the
+rest makes the reading a fact about those conversations rather than about them,
+and `list` says so on every run.
 
 `next` tells you which file to read, which rules to apply, and which file to
 write. There are exactly two things you ever write:
