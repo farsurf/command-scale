@@ -6,8 +6,34 @@
 // the number is a claim about.
 import { LEVEL_NAMES, SITUATION_NAMES, COLUMNS, CONFERRING, KNOWING_CONFERS_FROM,
   NEED, PASS, WARN, DROP, SHOW_RATE, DEPTH_BATCH, DEPTH_NEED } from './scale.mjs';
+import { rungDefinitions } from './rungs.mjs';
+
+/** What one more step up looks like, in the standard's own sentence.
+ *
+ *  Parsed out of the standard rather than written down a second time. Copied
+ *  into a card it would drift from the one the reading actually applies, and
+ *  the card would then be promising a step against a rule nobody is using. */
+export function stepUp(column, rung, standard) {
+  const defs = rungDefinitions(standard);
+  const said = defs[column] && defs[column][rung];
+  return said || '';
+}
 
 const pct = (r) => `${Math.round(r * 100)}%`;
+
+/** Wrapped to the card's width, so the standard's own sentence can be printed
+ *  whole rather than cut to fit. */
+function wrap(text, indent, width = 72) {
+  const words = String(text).split(/\s+/).filter(Boolean);
+  const lines = [];
+  let line = '';
+  for (const w of words) {
+    if ((line + ' ' + w).trim().length > width) { lines.push(indent + line.trim()); line = w; }
+    else line = `${line} ${w}`;
+  }
+  if (line.trim()) lines.push(indent + line.trim());
+  return lines;
+}
 const bar = (s) => '─'.repeat(s);
 
 function situationLine(name, s) {
@@ -65,6 +91,13 @@ export function card(st, meta = {}) {
     L.push(...rungTable(s));
     if (s.samples < NEED) {
       L.push(`      to hold L${s.next} ${LEVEL_NAMES[s.next]}: ${s.short} more occasion${s.short === 1 ? '' : 's'} at that height, ${st.must} of ten met`);
+    }
+    // What that height IS, in the standard's own words, so the number beside
+    // it is a claim somebody can act on rather than a score.
+    const said = meta.standard ? stepUp(c, s.next, meta.standard) : '';
+    if (said) {
+      L.push(`      what L${s.next} ${LEVEL_NAMES[s.next]} is:`);
+      L.push(...wrap(said, '        '));
     }
     L.push('');
   }

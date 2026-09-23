@@ -245,7 +245,12 @@ function cmdReport() {
   const tasks = allPlacements();
   if (!tasks.length) { console.log('Nothing read yet. Start with: node scripts/cs.mjs import'); process.exit(1); }
   const st = standing(tasks);
-  console.log(card(st, { tasks: tasks.length, sessions: sessionDirs().length }));
+  // The sessions that contributed, not the ones prepared: a run that has read
+  // three of fifteen says fifteen and claims evidence it has not looked at.
+  const contributed = new Set(tasks.map((t) => String(t.id).split('#')[0])).size;
+  let standard = '';
+  try { standard = fs.readFileSync(path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'skill', 'prompts', 'placing.md'), 'utf8'); } catch { /* the card prints without it */ }
+  console.log(card(st, { tasks: tasks.length, sessions: contributed, standard }));
   const w = weakest(st);
   if (w) {
     const name = SITUATION_NAMES[w.column];
