@@ -33,7 +33,7 @@ const PASSES = {
     only: ['knowing'],
     says: 'the fourth situation on its own — what is asked to be told' },
 };
-import { card, weakest, grid, snapshot, movement, gaps, trail } from './lib/report.mjs';
+import { card, weakest, grid, snapshot, movement, gaps, trail, handover, stepUp } from './lib/report.mjs';
 
 // A reading is about a person, not about a project, so what it keeps lives
 // with the person. Kept beside whatever directory the command happened to be
@@ -678,9 +678,42 @@ function cmdReport() {
   // above is the person's; saying so here, rather than only in the skill's
   // text, is the difference between a reading they were given and a reading
   // they were told about.
+  // The short form, and the instruction that goes with it, printed where the
+  // reading ends and is about to be described instead of handed over.
+  // Their own sentence, from the situation where there is one to quote. The
+  // lowest standing is the one to read the next step against, but the lowest
+  // standing is often the situation with nothing in it — and a reading that
+  // shows them no sentence of their own at all is the thing this is for.
+  const hasWords = (c) => Object.values(st.situations[c] ? { s: 1 } : {}).length
+    && tasks.some((t) => (t.placements || []).some((p2) => p2.column === c && p2.cite && p2.landed === 'yes'));
+  const quoteColumn = (w && hasWords(w.column))
+    ? w.column
+    : (COLUMNS.filter(hasWords).sort((a, b) => (st.situations[b].seen - st.situations[a].seen))[0] || null);
+  let quote = '';
+  if (quoteColumn && st.situations[quoteColumn]) {
+    const at = st.situations[quoteColumn].reached;
+    for (const t of tasks) {
+      for (const p2 of t.placements || []) {
+        if (p2.column === quoteColumn && p2.rung === at && p2.cite && p2.landed === 'yes') { quote = p2.cite; break; }
+      }
+      if (quote) break;
+    }
+  }
+  const nextCloses = quoteColumn && st.situations[quoteColumn]
+    ? stepUp(quoteColumn, Math.min(5, st.situations[quoteColumn].reached + 1),
+      quoteColumn === 'knowing'
+        ? `**knowing** — the part of a message that asks to be told something.\n\n${promptFile('knowing.md')}`
+        : standard)
+    : '';
+  console.log(handover(st, {
+    tasks: tasks.length, sessions: contributed, weakest: w, quote, quoteColumn, nextCloses, moved,
+  }));
+
   console.log('  ──  HANDING IT OVER  ──────────────────────────────────────────');
-  console.log('  Everything above is theirs. Give them the card as it stands rather');
-  console.log('  than a summary of it: a summary of a reading is one more reading.');
+  console.log('  The block above is for them, and it is short so that it can be given');
+  console.log('  rather than summarised. Give it as it stands. A summary of a reading');
+  console.log('  is one more reading, and what a summary drops first is the numbers');
+  console.log('  and their own words, which is the reading.');
   console.log('');
   console.log('  The reading is also a page. Give them the page one of these ways,');
   console.log('  in this order, and never a bare path — a path is on the machine this');

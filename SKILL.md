@@ -55,8 +55,13 @@ comes rather than saving it up — a run that says nothing until the end is
 indistinguishable, from outside, from a program helping itself to the machine,
 and a run stopped part way then hands over nothing at all.
 
-**At the end, hand over the card itself.** `report` and then `gap`, given to
-them whole. Describing what the card would say is not giving it to them.
+**At the end, hand over the reading.** `report` ends with a block marked FOR
+THEM: every situation with where it stands, their own sentence at the height
+they reach, and what the next height would close. It is twenty lines because it
+is the part that has to survive being carried into a conversation. Give it as
+it stands. A summary of a reading is one more reading, and what a summary drops
+first is the numbers and their own words, which is the reading. `gap` says the
+same thing at length, for somebody who wants it.
 
 `report` also writes the same reading as a single page, `reading.html`, beside
 the readings, and `page` writes that page to standard output. It loads nothing

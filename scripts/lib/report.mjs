@@ -405,3 +405,61 @@ export function gaps(st, tasks, standard, questionStandard = '') {
   L.push('');
   return L.join('\n');
 }
+
+/**
+ * The short form, and the only part meant to be carried into a conversation.
+ *
+ * The long card and the gap together run to a hundred and thirty lines. Asked
+ * to hand that to somebody, an assistant writes its own summary instead, and
+ * what a summary of a reading drops first is the numbers and the quotations —
+ * which is the reading. So the thing to hand over is made short enough to be
+ * handed over: every situation with where it stands, the lowest one with their
+ * own sentence under it, and what the next height would close. Nothing here is
+ * new; it is the card with the explanations taken out, and the long one is
+ * still printed above it for whoever is running this.
+ */
+export function handover(st, meta = {}) {
+  const tasks = meta.tasks || 0;
+  const L = [];
+  const trim = (t, n = 150) => {
+    const one = String(t).replace(/\s+/g, ' ').trim();
+    const stop = one.indexOf('. ');
+    const cut = stop > 40 ? one.slice(0, stop + 1) : one;
+    return cut.length > n ? `${cut.slice(0, n - 1)}…` : cut;
+  };
+  L.push('');
+  L.push('  ──  FOR THEM  ────────────────────────────────────────────────');
+  L.push(`  THE COMMAND SCALE v1.0 · ${tasks} task${tasks === 1 ? '' : 's'} read across ${meta.sessions || 0} conversation${meta.sessions === 1 ? '' : 's'}`);
+  L.push('');
+  L.push(st.level
+    ? `  LEVEL HELD: L${st.level} ${LEVEL_NAMES[st.level]}`
+    : `  LEVEL HELD: none yet — held means every conferring situation at that height,`);
+  if (!st.level) L.push(`              ${NEED} occasions with ${Math.ceil(NEED * PASS)} met (§5.3).`);
+  L.push('');
+  for (const c of COLUMNS) {
+    const s = st.situations[c];
+    const name = SITUATION_NAMES[c].padEnd(10);
+    if (!s) { L.push(`    ${name} nothing in this record`); continue; }
+    const where = s.held ? `holds L${s.held} ${nameOf(c, s.held)}` : `nothing held`;
+    L.push(`    ${name} reached L${s.reached} ${nameOf(c, s.reached).padEnd(11)} ${String(s.seen).padStart(3)} occasion${s.seen === 1 ? ' ' : 's'}   ${where}${CONFERRING.includes(c) ? '' : ' · not counted'}`);
+  }
+  L.push('');
+  const w = meta.weakest;
+  if (w) {
+    L.push(`  LOWEST: ${SITUATION_NAMES[w.column]}${w.why ? ` — ${w.why}` : `, ${w.short} more occasion(s) at L${w.next} ${nameOf(w.column, w.next)} would hold it`}`);
+  }
+  if (meta.quote) {
+    L.push(`  YOUR WORDS at the height you reach in ${SITUATION_NAMES[meta.quoteColumn]}:`);
+    L.push(`    “${trim(meta.quote, 110)}”`);
+  }
+  if (meta.nextCloses) {
+    L.push(`  WHAT THE NEXT HEIGHT CLOSES: ${trim(meta.nextCloses)}`);
+  }
+  if (meta.moved && meta.moved.length) L.push(`  SINCE LAST TIME: ${meta.moved.join(' · ')}`);
+  L.push('');
+  L.push(`  Over ${tasks} task${tasks === 1 ? '' : 's'} this is a placement, not a measurement (§10).`);
+  L.push('  Every level above the first quotes their own words, checked against the');
+  L.push('  message it was credited to. A placement they say is wrong is wrong.');
+  L.push('');
+  return L.join('\n');
+}
