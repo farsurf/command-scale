@@ -130,17 +130,72 @@ export function card(st, meta = {}) {
   return L.join('\n');
 }
 
-/** The single lowest-standing capability at the level they hold (§8). */
-export function weakest(st) {
-  const scored = CONFERRING.map((c) => st.situations[c]).filter(Boolean);
-  if (!scored.length) return null;
-  let worst = null;
+/**
+ * The two findings a reading owes, which are not one ranking.
+ *
+ * Standing and evidence are different things and saying them as one number
+ * loses both. A situation standing lower than the others is a fact about the
+ * person. A situation with two occasions in it is a fact about the record —
+ * nothing is known there yet, and calling it their weakest says something
+ * about them that nothing supports.
+ *
+ * So standing is compared only where there is enough to compare (§5.3's floor,
+ * for the same reason a rate is not printed under it), and thinness is
+ * reported separately and always.
+ */
+export function findings(st) {
+  const lows = [];
+  const thin = [];
   for (const c of CONFERRING) {
     const s = st.situations[c];
-    if (!s) return { column: c, why: 'no occasion in this record at all' };
-    if (!worst || s.held < worst.s.held) worst = { c, s };
+    const seen = s ? s.seen : 0;
+    if (seen < SHOW_RATE) thin.push({ column: c, seen, short: SHOW_RATE - seen });
+    if (s && seen >= SHOW_RATE) lows.push({ column: c, held: s.held, reached: s.reached, next: s.next, short: s.short, seen });
   }
-  return worst ? { column: worst.c, held: worst.s.held, next: worst.s.next, short: worst.s.short } : null;
+  // Lowest by what is held; where nothing is held anywhere, by what has been
+  // reached. A tie is a tie and is reported as one rather than broken by the
+  // order the situations happen to be listed in.
+  let standing = null;
+  if (lows.length >= 2) {
+    const key = (x) => (x.held * 10) + x.reached;
+    const min = Math.min(...lows.map(key));
+    const at = lows.filter((x) => key(x) === min);
+    standing = { tied: at.length > 1, at, comparable: lows.length };
+  }
+  // An empty situation is the extreme of thinness and never of standing:
+  // nothing is known there, which is not the same as standing low.
+  thin.sort((a, b) => a.seen - b.seen);
+  return { standing, thin };
+}
+
+/** One line naming where a reading stands lowest, or why it cannot say. */
+export function lowestLine(f) {
+  if (!f.standing) return 'lowest:   two situations have to have enough in them before either can be called lower';
+  const names = f.standing.at.map((x) => SITUATION_NAMES[x.column]).join(' and ');
+  const x = f.standing.at[0];
+  const where = x.held ? `holds L${x.held} ${LEVEL_NAMES[x.held]}` : `holds nothing yet, reaching L${x.reached} ${LEVEL_NAMES[x.reached]}`;
+  return `lowest:   ${names}${f.standing.tied ? ' — level' : ''}, ${where}; ${f.standing.comparable} situation(s) have enough to compare`;
+}
+
+/** One line naming where the record is too thin to say anything. */
+export function thinnestLine(f) {
+  if (!f.thin.length) return 'thinnest: every situation has enough occasions for a rate to mean something';
+  const t = f.thin[0];
+  if (!t.seen) return `thinnest: ${SITUATION_NAMES[t.column]} — nothing in your record at all, so nothing is known there`;
+  return `thinnest: ${SITUATION_NAMES[t.column]} — ${t.seen} occasion${t.seen === 1 ? '' : 's'}; ${t.short} more before a rate means anything`;
+}
+
+/** Kept for the long card, which names one thing to work on. */
+export function weakest(st) {
+  const f = findings(st);
+  const empty = f.thin.find((t) => !t.seen);
+  if (empty) return { column: empty.column, why: 'no occasion in this record at all' };
+  if (f.standing) {
+    const x = f.standing.at[0];
+    return { column: x.column, held: x.held, next: x.next, short: x.short };
+  }
+  const t = f.thin[0];
+  return t ? { column: t.column, why: `only ${t.seen} occasion(s) — too thin to stand anything on` } : null;
 }
 
 /** The whole standing on one screen: four situations by five heights.
@@ -170,13 +225,10 @@ export function grid(st, meta = {}) {
   }
   L.push('');
   L.push(`  ${st.level ? `held: L${st.level} ${LEVEL_NAMES[st.level]}` : 'held: nothing yet'} — a height counts when ${NEED} occasions reach it and ${Math.ceil(NEED * PASS)} are met (* = held)`);
-  const w = weakest(st);
-  if (w) {
-    L.push(w.why
-      ? `  next:  ${SITUATION_NAMES[w.column]} — ${w.why}`
-      : `  next:  ${SITUATION_NAMES[w.column]} stands lowest; ${w.short} more occasion(s) at L${w.next} ${LEVEL_NAMES[w.next]}`);
-  }
-  L.push('         what you left open, and what closes it:  cs gap');
+  const f = findings(st);
+  L.push(`  ${lowestLine(f)}`);
+  L.push(`  ${thinnestLine(f)}`);
+  L.push('  what you left open, and what closes it:  cs gap');
   if (meta.delta && meta.delta.length) {
     L.push('');
     L.push(`  since your last reading: ${meta.delta.join(' · ')}`);
@@ -198,6 +250,17 @@ export function snapshot(st, tasks) {
 }
 
 /** What moved, in the fewest words that are still true. */
+const occasions = (side) => (side ? Object.values(side.cells || {}).reduce((n, [, m]) => n + m, 0) : 0);
+
+/**
+ * What moved, in the fewest words that are still true.
+ *
+ * Three kinds of movement and they are not the same thing: a level taken or
+ * given back, a height reached for the first time, and evidence arriving where
+ * there was not enough of it. The third is most of what happens week to week,
+ * and a line that only reported the first two said "nothing changed" to
+ * somebody whose thinnest situation had just doubled.
+ */
 export function movement(prev, now) {
   if (!prev) return [];
   const out = [];
@@ -210,8 +273,35 @@ export function movement(prev, now) {
     if (b.held > a.held) out.push(`${SITUATION_NAMES[c]} now holds L${b.held} ${LEVEL_NAMES[b.held]}`);
     else if (b.held < a.held) out.push(`${SITUATION_NAMES[c]} gave back L${a.held} ${LEVEL_NAMES[a.held]}`);
     else if (b.reached > a.reached) out.push(`${SITUATION_NAMES[c]} reached L${b.reached} ${LEVEL_NAMES[b.reached]} for the first time`);
+    else {
+      const gained = occasions(b) - occasions(a);
+      if (gained > 0) out.push(`${SITUATION_NAMES[c]} +${gained} occasion${gained === 1 ? '' : 's'}`);
+    }
   }
   return out;
+}
+
+/** The trajectory: one line per reading that moved anything. */
+export function trail(entries) {
+  const L = [];
+  L.push('');
+  L.push('  EVERY READING SO FAR');
+  L.push('');
+  L.push(`  ${'when'.padEnd(12)}${'tasks'.padStart(6)}   ${COLUMNS.map((c) => SITUATION_NAMES[c].slice(0, 9).padStart(10)).join('')}`);
+  for (const [i, e] of entries.entries()) {
+    const cells = COLUMNS.map((c) => {
+      const s = e.situations[c];
+      if (!s) return '·'.padStart(10);
+      return `${s.held ? `L${s.held}*` : `L${s.reached}`}/${occasions(s)}`.padStart(10);
+    }).join('');
+    const moved = i ? movement(entries[i - 1], e).filter((m) => !/^\+\d+ task/.test(m)) : [];
+    L.push(`  ${String(e.at).slice(0, 10).padEnd(12)}${String(e.tasks).padStart(6)}   ${cells}`);
+    if (moved.length) L.push(`  ${' '.repeat(18)}${moved.join(' · ')}`);
+  }
+  L.push('');
+  L.push('  Lx = highest reached, Lx* = held · /n = occasions counted in that situation');
+  L.push('');
+  return L.join('\n');
 }
 
 /**

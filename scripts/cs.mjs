@@ -24,7 +24,7 @@ const PASSES = {
     only: ['knowing'],
     says: 'the fourth situation on its own — what is asked to be told' },
 };
-import { card, weakest, grid, snapshot, movement, gaps } from './lib/report.mjs';
+import { card, weakest, grid, snapshot, movement, gaps, trail } from './lib/report.mjs';
 
 // A reading is about a person, not about a project, so what it keeps lives
 // with the person. Kept beside whatever directory the command happened to be
@@ -444,7 +444,11 @@ function cmdReport() {
     console.log('');
   }
   write(path.join(WORK, 'reading.json'), { takenAt: new Date().toISOString(), standing: st, tasks: tasks.length });
-  keepSnapshot(snapshot(st, tasks.length), lastSnapshot());
+  const prev = lastSnapshot();
+  const now = snapshot(st, tasks.length);
+  const moved = movement(prev, now);
+  if (moved.length) console.log(`  SINCE YOUR LAST READING: ${moved.join(' · ')}\n`);
+  keepSnapshot(now, prev);
   console.log(`  Machine-readable: ${path.join(WORK, 'reading.json')}`);
   console.log('');
 }
@@ -453,6 +457,15 @@ const promptFile = (name) => {
   try { return fs.readFileSync(path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'prompts', name), 'utf8'); } catch { return ''; }
 };
 const readStandard = () => promptFile('placing.md');
+
+function cmdHistory() {
+  let entries = [];
+  try {
+    entries = fs.readFileSync(HISTORY(), 'utf8').trim().split('\n').filter(Boolean).map((l) => JSON.parse(l));
+  } catch { /* none yet */ }
+  if (!entries.length) { console.log('No readings recorded yet.'); return; }
+  console.log(trail(entries));
+}
 
 function cmdGap() {
   const tasks = allPlacements();
@@ -488,6 +501,7 @@ else if (cmd === 'recent') cmdRecent();
 else if (cmd === 'list') cmdList();
 else if (cmd === 'forget') cmdForget();
 else if (cmd === 'gap') cmdGap();
+else if (cmd === 'history') cmdHistory();
 else if (cmd === 'next') cmdNext();
 else {
   console.log(`The Command Scale v1.0 — take a reading of your own record.
@@ -500,6 +514,7 @@ else {
   node scripts/cs.mjs place <session> <task>             keep the first three situations
   node scripts/cs.mjs know  <session> <task>             keep the fourth, read on its own
   node scripts/cs.mjs gap                                what you left open, and what closes it
+  node scripts/cs.mjs history                            every reading so far, and what moved
   node scripts/cs.mjs recent                             the last few tasks read
   node scripts/cs.mjs report                             the long card
   node scripts/cs.mjs why <situation>                    the words behind it
