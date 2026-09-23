@@ -15,16 +15,15 @@
  *  its place in this list. */
 export const COLUMNS = ['asking', 'reacting', 'blocked', 'knowing'];
 
-/** The situations that confer a level today (B.2 "Conferring").
+/** The situations that confer a level (B.2 "Conferring").
  *
- *  `knowing` — the Question situation — is placed and recorded and confers
- *  nothing. It begins to confer one month after an implementation begins to
- *  arrange practice in it, on a single date for everyone it assesses. A
- *  reading taken over a record that nobody arranged practice in has no such
- *  date, so this implementation states the date as never and says so on the
- *  card. */
-export const CONFERRING = ['asking', 'reacting', 'blocked'];
-export const KNOWING_CONFERS_FROM = null;
+ *  All four. `knowing` — the Question situation — is read on a ladder of its
+ *  own because it measures something the other three do not: nothing is being
+ *  made, so what a person supplies is that person's own thinking rather than
+ *  the design of a thing. Measuring a different thing is why it has its own
+ *  five names, and is no reason to leave it out of a level: a level is held
+ *  where every conferring situation holds it, and this one is one of them. */
+export const CONFERRING = ['asking', 'reacting', 'blocked', 'knowing'];
 
 export const RUNGS = [1, 2, 3, 4, 5, 6];
 export const LANDED = ['yes', 'no', 'not_theirs'];

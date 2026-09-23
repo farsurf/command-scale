@@ -222,10 +222,12 @@ three batches at least (A.5). `prompts/depth.md` is the reading for it; this
 program does not take that reading at all. It counts the batches and says on
 the card how many there are and how many are needed.
 
-**Question confers nothing.** It is placed and recorded. It begins to confer
-one month after an implementation begins to arrange practice in it, on a single
-date for everyone that implementation assesses (B.2). Nothing here arranges
-practice, so this implementation states its date as never, and the card says so.
+**Question counts toward a level as the other three do (B.2).** It is read on
+a ladder of its own, with names of its own, because what it measures is not
+what the other three measure: nothing is being made, so what somebody supplies
+is their own thinking rather than the design of a thing. That is why it has its
+own five names and no reason to leave it out of a level — a level is held where
+every conferring situation holds it, and this is one of the four.
 
 **Under ten occasions at a height with seven met, no level is held there.**
 That is the standard's published default (§5.3). This implementation also sets

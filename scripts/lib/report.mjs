@@ -4,7 +4,7 @@
 // than the floor §5.3 requires and this implementation set — a rate over four
 // occasions is a fact about those four — and it must not print a number
 // without the sentence that says what the number is a claim about.
-import { LEVEL_NAMES, QUESTION_LEVEL_NAMES, nameOf, SITUATION_NAMES, COLUMNS, CONFERRING, KNOWING_CONFERS_FROM,
+import { LEVEL_NAMES, QUESTION_LEVEL_NAMES, nameOf, SITUATION_NAMES, COLUMNS, CONFERRING,
   NEED, PASS, WARN, DROP, SHOW_RATE, DEPTH_BATCH, DEPTH_NEED } from './scale.mjs';
 import { rungDefinitions } from './rungs.mjs';
 
@@ -115,9 +115,9 @@ export function card(st, meta = {}) {
   L.push(`  · L6 Myth is read across batches of ${DEPTH_BATCH} closed tasks, ${DEPTH_NEED} batches at least (A.5).`);
   const batches = Math.floor(tasks / DEPTH_BATCH);
   L.push(`    You have ${batches} full batch${batches === 1 ? '' : 'es'}; ${DEPTH_NEED} are needed. Not read here.`);
-  L.push('  · Question is placed and recorded and confers nothing, because nothing');
-  L.push('    here arranges practice in it (B.2 "Conferring"). This implementation');
-  L.push(`    states its conferring date as ${KNOWING_CONFERS_FROM || 'never'}.`);
+  L.push('  · Question counts toward a level as the other three do (B.2). This');
+  L.push('    instrument arranges no practice in it, or in any of them — it reads');
+  L.push('    what is already in the record and says what it found.');
   L.push(`  · Under ${SHOW_RATE} occasions no rate is printed at all — §5.3 requires`);
   L.push(`    a floor and leaves its height open; ${SHOW_RATE} is this implementation's own value.`);
   L.push('  · A reading over few tasks is a placement, not a measurement (§10).');

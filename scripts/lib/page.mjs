@@ -131,7 +131,7 @@ export function page(st, meta = {}) {
     H.push(`<tr><th>${esc(SITUATION_NAMES[c])}</th>${cells}</tr>`);
   }
   H.push('</tbody></table>');
-  H.push(`<p class="note">Each cell is how many occasions at that height were met, out of how many there were. A height is held at ${NEED} occasions with ${Math.ceil(NEED * PASS)} met (§5.3); under ${SHOW_RATE} no rate is shown at all. Question is placed and recorded and confers nothing here (B.2), and is read on a ladder of its own: ${[1, 2, 3, 4, 5].map((r) => `L${r} ${QUESTION_LEVEL_NAMES[r]}`).join(' · ')}.</p>`);
+  H.push(`<p class="note">Each cell is how many occasions at that height were met, out of how many there were. A height is held at ${NEED} occasions with ${Math.ceil(NEED * PASS)} met (§5.3); under ${SHOW_RATE} no rate is shown at all. Question counts toward a level as the other three do (B.2), and is read on a ladder of its own: ${[1, 2, 3, 4, 5].map((r) => `L${r} ${QUESTION_LEVEL_NAMES[r]}`).join(' · ')}.</p>`);
 
   H.push('<h2>Situation by situation</h2>');
   for (const c of COLUMNS) {
