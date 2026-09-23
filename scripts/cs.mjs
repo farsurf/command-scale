@@ -18,6 +18,7 @@ import { fileURLToPath } from 'url';
 // standards, the spec — silently comes back empty.
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 import { turnsFrom, knownRecordDirs, sessionFiles } from './lib/transcripts.mjs';
+import { page } from './lib/page.mjs';
 import { verifyPlacements, answerWasUnusable, standing, UNUSABLE, COLUMNS,
   SITUATION_NAMES, nameOf, CONFERRING } from './lib/scale.mjs';
 
@@ -168,6 +169,45 @@ const estimate = (list) => list.reduce((a, c) => {
   return { tasks: a.tasks + one.tasks, readings: a.readings + one.readings };
 }, { tasks: 0, readings: 0 });
 
+/** A few whole slices of what is waiting, each with what reading it would cost.
+ *
+ *  Built from the conversations that are actually here rather than offered as
+ *  fixed choices: a window with nothing in it is not printed, and neither is
+ *  one that would read exactly what another already covers. */
+function slices(all) {
+  const day = 86400000;
+  const iso = (d) => new Date(d).toISOString().slice(0, 10);
+  const out = [];
+  const seen = new Set();
+  const add = (label, picked, how) => {
+    if (!picked.length) return;
+    const key = picked.map((c) => c.file).sort().join('|');
+    if (seen.has(key)) return;
+    seen.add(key);
+    out.push({ label, n: picked.length, readings: estimate(picked).readings, how });
+  };
+  // Newest first within a budget, the same way --budget picks them, so the
+  // cheapest way in is offered rather than left to be worked out. A first look
+  // is what most people want and the standard says plainly what it is worth
+  // (§10): a placement over a few tasks, not a measurement.
+  const within = [];
+  for (const c of all) if (estimate([...within, c]).readings <= 20) within.push(c);
+  add('a first look', within, 'node scripts/cs.mjs import --budget 20');
+  add('the newest 3', all.slice(0, 3), 'node scripts/cs.mjs import --sessions 3');
+  for (const days of [7, 30]) {
+    const from = iso(Date.now() - (days * day));
+    add(`the last ${days} days`, all.filter((c) => c.at >= from), `node scripts/cs.mjs import --since ${from}`);
+  }
+  const byProject = new Map();
+  for (const c of all) byProject.set(c.project, (byProject.get(c.project) || 0) + 1);
+  if (byProject.size > 1) {
+    const [name] = [...byProject.entries()].sort((a, b) => b[1] - a[1])[0];
+    add(`everything from ${name}`, all.filter((c) => c.project === name), `node scripts/cs.mjs import --project ${name}`);
+  }
+  add('everything waiting', all, `node scripts/cs.mjs import --sessions ${all.length}`);
+  return out;
+}
+
 function cmdList() {
   const since = arg('since', '');
   const project = arg('project', '');
@@ -183,13 +223,24 @@ function cmdList() {
     console.log(`  ${String(i + 1).padStart(3)}  ${c.at}  ${String(c.turns).padStart(3)} msg  ~${String(one).padStart(3)} readings  ${c.project.slice(0, 20).padEnd(20)}  ${c.opens}`);
   });
   const e = estimate(shown);
-  console.log(`\n  Reading all ${shown.length}: about ${e.tasks} task(s), ${e.readings} readings for your agent to take.`);
-  console.log('  Take some of them:  node scripts/cs.mjs import --take 1,2,5');
-  console.log('  Or a slice:         node scripts/cs.mjs import --since 2026-09-01 --sessions 5');
+  console.log(`\n  Reading all ${shown.length} of these: about ${e.tasks} task(s), ${e.readings} readings.`);
   console.log('');
-  console.log('  Choose by when it happened or which project it was in. Choosing your');
-  console.log('  best conversations and leaving out the rest makes the reading a fact');
-  console.log('  about those conversations rather than about you.');
+  // Whole slices rather than a menu of everything. A list of fifteen lines is
+  // a directory, and somebody reading a directory still does not know which
+  // lines to pick; a few slices with their cost beside them is a choice that
+  // can be made in one look. The numbered list stays, for anybody who wants to
+  // name conversations one at a time.
+  console.log('  WAYS TO CHOOSE, WITH WHAT EACH WOULD COST');
+  const ways = slices(all);
+  const w = Math.max(21, ...ways.map((o) => o.label.length));
+  for (const o of ways) {
+    const cost = `${o.n} conversation(s), ~${o.readings} readings`;
+    console.log(`    ${o.label.padEnd(w)}  ${cost.padEnd(34)}  ${o.how}`);
+  }
+  console.log(`    ${'or name them yourself'.padEnd(w)}  ${' '.repeat(34)}  node scripts/cs.mjs import --take 1,2,5`);
+  console.log('');
+  console.log('  Choosing your best conversations and leaving out the rest makes the');
+  console.log('  reading a fact about those conversations rather than about you.');
   console.log('');
 }
 
@@ -518,6 +569,31 @@ function cmdReport() {
   const moved = movement(prev, now);
   if (moved.length) console.log(`  SINCE YOUR LAST READING: ${moved.join(' · ')}\n`);
   keepSnapshot(now, prev);
+
+  // A reading is taken once and looked at afterwards, and what brings somebody
+  // back is seeing themselves move rather than being told a level. So the card
+  // ends by saying what a next reading would cost and what is still waiting —
+  // which is arithmetic over this machine, not an invitation to spend.
+  const waiting = candidates();
+  const nextStep = w && !w.why
+    ? `${SITUATION_NAMES[w.column]} is where the next step is: ${w.short} more occasion(s) at L${w.next} ${nameOf(w.column, w.next)}.`
+    : (w ? `${SITUATION_NAMES[w.column]} has nothing in it yet; one occasion there is worth more than another anywhere else.` : '');
+  if (waiting.length) {
+    const soon = waiting.slice(0, 3);
+    console.log(`  COMING BACK: ${waiting.length} conversation(s) here are unread; the newest ${soon.length} would take about ${estimate(soon).readings} readings.`);
+    console.log('  Looking at this reading again costs nothing — only reading a new conversation asks a model anything.');
+    console.log('');
+  }
+
+  const html = path.join(WORK, 'reading.html');
+  writeText(html, page(st, {
+    tasks, sessions: contributed, standard, questionStandard: promptFile('knowing.md'),
+    moved, nextStep,
+    waiting: { count: waiting.length, readings: waiting.length ? estimate(waiting.slice(0, 3)).readings : 0 },
+  }));
+  console.log(`  A page you can open, with the same reading laid out: ${html}`);
+  console.log('  Show it if you can render a page; otherwise open it in a browser.');
+  console.log('');
   console.log(`  Machine-readable: ${path.join(WORK, 'reading.json')}`);
   console.log('');
 }

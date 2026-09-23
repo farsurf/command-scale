@@ -36,6 +36,10 @@ and a run stopped part way then hands over nothing at all.
 
 **At the end, hand over the card itself.** `report` and then `gap`, given to
 them whole. Describing what the card would say is not giving it to them.
+`report` also writes the same reading as a single page, `reading.html`, in the
+work directory, and prints its path: show that page if you can render one, and
+otherwise tell them where it is so they can open it. It loads nothing from
+anywhere and works offline.
 
 ## The order of work
 
