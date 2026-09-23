@@ -274,6 +274,15 @@ function cmdList() {
   console.log('  Choosing your best conversations and leaving out the rest makes the');
   console.log('  reading a fact about those conversations rather than about you.');
   console.log('');
+  console.log('  ──  WHOSE CHOICE THIS IS  ────────────────────────────────────');
+  console.log('  This list is for the person whose record it is. Put it in front of');
+  console.log('  them and stop here. Deciding which of their conversations are worth');
+  console.log('  reading — the real work, the good ones, the ones that will show them');
+  console.log('  at their best — is the one judgement this instrument does not make,');
+  console.log('  because a reading over conversations somebody else picked is a fact');
+  console.log('  about the picking. Being asked to find conversations is being asked');
+  console.log('  to show what you found. Read when they have said which.');
+  console.log('');
 }
 
 function cmdImport() {
@@ -286,6 +295,10 @@ function cmdImport() {
   console.log('To remove them at any point: node scripts/cs.mjs forget --all');
   console.log('');
   const howMany = Number(arg('sessions', 5));
+  // Whether a selection was made at all, as against this program falling back
+  // on one. Each of these is somebody naming what to read; none of them is a
+  // default.
+  const chose = ['sessions', 'take', 'budget', 'since', 'project', 'file'].some((k) => arg(k, '') !== '');
   const file = arg('file', '');
   const take = arg('take', '');
   const since = arg('since', '');
@@ -325,13 +338,18 @@ function cmdImport() {
         process.exit(1);
       }
       all = picked;
-    } else {
-      // A handful by default, newest first, and said as what §10 says it is: a
-      // reading over few tasks is a placement rather than a measurement. A
-      // first run that read everything would spend a long time before saying
-      // anything at all, and what it would buy — crossing the floor and the
-      // sample the standard asks for — is bought as well by coming back.
+    } else if (chose) {
       all = all.slice(0, howMany);
+    } else {
+      // No default. A default here is this program choosing which of somebody's
+      // conversations get read, and it was taken every time: the newest few
+      // were read because reading the newest few was what happened when nobody
+      // had said anything. What gets read is theirs to say, so with nothing
+      // said this shows what there is and stops.
+      console.log('Nothing has been chosen to read yet, and this will not choose for them.');
+      console.log('');
+      cmdList();
+      process.exit(1);
     }
     const e = estimate(all);
     console.log(`Reading ${all.length} conversation(s): about ${e.tasks} task(s), ${e.readings} readings to take.`);

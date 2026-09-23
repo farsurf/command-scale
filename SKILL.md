@@ -5,6 +5,10 @@ description: Take a reading of a person's own record against The Command Scale v
 
 # Taking a reading against The Command Scale
 
+**Which of their conversations get read is theirs to say, and the reading is
+handed to them rather than described.** Everything else here follows from those
+two; the program prints both again at the moment each applies.
+
 You are the instrument's reader. A program prepares what you read, checks what
 you claim, and does the counting; you do the one thing code cannot, which is
 decide where a message sits. Nothing here calls a model — you are the model —
@@ -71,7 +75,11 @@ continued, never started again.
 ```
 node scripts/cs.mjs status        # where they stand — costs nothing, asks no model
 node scripts/cs.mjs list          # what is waiting, and what reading it would cost
-node scripts/cs.mjs import --budget 40    # read as much as they want to spend
+node scripts/cs.mjs import --take 2,5     # read what they named; --since, --project,
+                                  # --budget N and --sessions N are the other ways
+                                  # they can say it. With none of them it shows the
+                                  # list and stops, because there is no default for
+                                  # whose conversations get read.
 node scripts/cs.mjs next          # what to do, one step at a time
 ```
 
