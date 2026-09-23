@@ -24,7 +24,7 @@ const PASSES = {
     only: ['knowing'],
     says: 'the fourth situation on its own — what is asked to be told' },
 };
-import { card, weakest, grid, snapshot, movement } from './lib/report.mjs';
+import { card, weakest, grid, snapshot, movement, gaps } from './lib/report.mjs';
 
 // A reading is about a person, not about a project, so what it keeps lives
 // with the person. Kept beside whatever directory the command happened to be
@@ -433,8 +433,7 @@ function cmdReport() {
   // The sessions that contributed, not the ones prepared: a run that has read
   // three of fifteen says fifteen and claims evidence it has not looked at.
   const contributed = new Set(tasks.map((t) => String(t.id).split('#')[0])).size;
-  let standard = '';
-  try { standard = fs.readFileSync(path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'prompts', 'placing.md'), 'utf8'); } catch { /* the card prints without it */ }
+  const standard = readStandard();
   console.log(card(st, { tasks: tasks.length, sessions: contributed, standard }));
   const w = weakest(st);
   if (w) {
@@ -448,6 +447,17 @@ function cmdReport() {
   keepSnapshot(snapshot(st, tasks.length), lastSnapshot());
   console.log(`  Machine-readable: ${path.join(WORK, 'reading.json')}`);
   console.log('');
+}
+
+const promptFile = (name) => {
+  try { return fs.readFileSync(path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'prompts', name), 'utf8'); } catch { return ''; }
+};
+const readStandard = () => promptFile('placing.md');
+
+function cmdGap() {
+  const tasks = allPlacements();
+  if (!tasks.length) { console.log('Nothing read yet.'); return; }
+  console.log(gaps(standing(tasks), tasks, readStandard(), promptFile('knowing.md')));
 }
 
 function cmdWhy(which) {
@@ -477,6 +487,7 @@ else if (cmd === 'status') cmdStatus();
 else if (cmd === 'recent') cmdRecent();
 else if (cmd === 'list') cmdList();
 else if (cmd === 'forget') cmdForget();
+else if (cmd === 'gap') cmdGap();
 else if (cmd === 'next') cmdNext();
 else {
   console.log(`The Command Scale v1.0 — take a reading of your own record.
@@ -488,6 +499,7 @@ else {
   node scripts/cs.mjs group <session>                    apply a grouping
   node scripts/cs.mjs place <session> <task>             keep the first three situations
   node scripts/cs.mjs know  <session> <task>             keep the fourth, read on its own
+  node scripts/cs.mjs gap                                what you left open, and what closes it
   node scripts/cs.mjs recent                             the last few tasks read
   node scripts/cs.mjs report                             the long card
   node scripts/cs.mjs why <situation>                    the words behind it

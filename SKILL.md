@@ -110,6 +110,27 @@ The instrument's field names and the standard's names are the same four things:
 | `blocked` | Roadblock | says progress has stopped |
 | `knowing` | Question | asks to be told something not yet held |
 
+## What the reading owes them beyond a number
+
+§8 puts three parts in the method and only the third is arranging an occasion.
+The second — **naming the single lowest-standing capability at the level they
+hold** — is part of the reading, and `node scripts/cs.mjs gap` is where it is
+said: their own sentence at the height they reached, what that height closed,
+and what the next one closes that it does not. Every sentence in it is either
+the standard's, parsed from it, or theirs, quoted from the message it was
+credited to.
+
+**Do not write the better sentence for them.** Not in the card, not in
+conversation, not when asked nicely. A sentence handed over is the assistant's,
+and this standard says in so many words that what the assistant said is never
+theirs — so a person who uses it is being credited for words that are not their
+own, and the next reading will be a reading of you. Name what they left open
+and stop there.
+
+**Do not arrange their practice.** Choosing a subject for them, setting them an
+exercise, scheduling a next occasion, or tracking whether they did it is the
+third part of the method and no part of this instrument.
+
 ## What this reading cannot say, and must not imply
 
 **L6 Myth is not read here.** It is read across batches of ten closed tasks,

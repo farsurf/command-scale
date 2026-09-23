@@ -176,6 +176,7 @@ export function grid(st, meta = {}) {
       ? `  next:  ${SITUATION_NAMES[w.column]} — ${w.why}`
       : `  next:  ${SITUATION_NAMES[w.column]} stands lowest; ${w.short} more occasion(s) at L${w.next} ${LEVEL_NAMES[w.next]}`);
   }
+  L.push('         what you left open, and what closes it:  cs gap');
   if (meta.delta && meta.delta.length) {
     L.push('');
     L.push(`  since your last reading: ${meta.delta.join(' · ')}`);
@@ -211,4 +212,85 @@ export function movement(prev, now) {
     else if (b.reached > a.reached) out.push(`${SITUATION_NAMES[c]} reached L${b.reached} ${LEVEL_NAMES[b.reached]} for the first time`);
   }
   return out;
+}
+
+/**
+ * Where the next step is, situation by situation.
+ *
+ * §8 puts three things in the method, and only the third is arranging an
+ * occasion. The second — naming the single lowest-standing capability — is
+ * part of the reading, and a card that prints a count without it has done
+ * two thirds of what a reading is for.
+ *
+ * Every sentence here is the standard's own, parsed from it, or the person's
+ * own, quoted from the message it was credited to. Nothing is written for
+ * them: a better sentence handed over would be the assistant's, and the
+ * standard says in so many words that what the assistant said is never theirs.
+ */
+export function gaps(st, tasks, standard, questionStandard = '') {
+  const defs = rungDefinitions(standard);
+  // The fourth standard is one situation from its first line, so it carries no
+  // heading naming it. Read with one put in front, its levels parse exactly as
+  // the others do and stay the sentences that standard actually applies.
+  const qDefs = questionStandard
+    ? rungDefinitions(`**knowing** — the part of a message that asks to be told something.\n\n${questionStandard}`)
+    : {};
+  const said = (col, r) => (col === 'knowing'
+    ? (qDefs.knowing && qDefs.knowing[r]) || ''
+    : (defs[col] && defs[col][r]) || '');
+  /** What the situation IS, in the standard's own opening sentence for it. */
+  const situationIs = (col) => {
+    const m = new RegExp(`^\\*\\*${col}\\*\\* — ([^]*?)(?=\\n\\n)`, 'm').exec(standard);
+    return m ? m[1].replace(/\s+/g, ' ').trim() : '';
+  };
+  const L = [];
+  L.push('');
+  L.push('  WHERE THE NEXT STEP IS');
+  L.push('');
+  for (const c of COLUMNS) {
+    const s = st.situations[c];
+    const name = SITUATION_NAMES[c];
+    if (!s) {
+      L.push(`  ${name} — nothing in your record at all`);
+      L.push(...wrap(`In ${tasks.length} task${tasks.length === 1 ? '' : 's'} you never said this. Not saying it is not a failure and nothing counts against you for it. A level is held only where every conferring situation holds it, so this one holds the whole reading at nothing until something appears here.`, '      '));
+      // What this situation is, not what its lowest level is: somebody who has
+      // never been here needs to recognise the occasion when it arrives, and
+      // the bottom level describes the poorest way of taking it.
+      const what = situationIs(c);
+      if (what) {
+        L.push('      what this situation is:');
+        L.push(...wrap(what, '        '));
+      }
+      L.push('');
+      continue;
+    }
+    const at = s.reached;
+    const next = Math.min(5, at + 1);
+    // Their own sentence at the height they reached: the best evidence there
+    // is of what they can already do, and the one to read the next step
+    // against.
+    let mine = '';
+    for (const t of tasks) {
+      for (const p of t.placements || []) {
+        if (p.column === c && p.rung === at && p.cite && p.landed === 'yes') { mine = p.cite; break; }
+      }
+      if (mine) break;
+    }
+    L.push(`  ${name} — you reach L${at} ${LEVEL_NAMES[at]}${CONFERRING.includes(c) ? '' : ' (recorded, not counted)'}`);
+    if (mine) L.push(...wrap(`your words: “${mine.replace(/\s+/g, ' ')}”`, '      '));
+    if (said(c, at)) {
+      L.push(`      what that closed:`);
+      L.push(...wrap(said(c, at), '        '));
+    }
+    if (next > at && said(c, next)) {
+      L.push(`      what L${next} ${LEVEL_NAMES[next]} closes that this does not:`);
+      L.push(...wrap(said(c, next), '        '));
+    }
+    L.push('');
+  }
+  L.push('  This says what you left open. It does not write the sentence that');
+  L.push('  would close it: a sentence handed to you would be the assistant\'s,');
+  L.push('  and under this standard what the assistant said is never yours.');
+  L.push('');
+  return L.join('\n');
 }
