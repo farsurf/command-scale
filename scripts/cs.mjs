@@ -194,6 +194,14 @@ function cmdList() {
 }
 
 function cmdImport() {
+  // Said before the first file is written rather than after. Somebody watching
+  // a reading being taken sees files appearing and no statement of what they
+  // are; read as tampering, the natural thing to do is stop the run, and a run
+  // stopped there has produced nothing. One line, up front, costs nothing and
+  // is the difference between a record and a rummage.
+  console.log(`Readings are kept under ${WORK}, and nothing else on this machine is written.`);
+  console.log('To remove them at any point: node scripts/cs.mjs forget --all');
+  console.log('');
   const howMany = Number(arg('sessions', 5));
   const file = arg('file', '');
   const take = arg('take', '');
@@ -262,12 +270,11 @@ function cmdImport() {
     done.push(id);
   }
   console.log(`Prepared ${kept} new session(s); ${done.length} in this reading.`);
-  console.log(`Work directory: ${WORK}`);
   console.log('');
   cmdNext();
 }
 
-function cmdNext() {
+function nextStep() {
   for (const id of sessionDirs()) {
     const d = sess(id);
     if (!fs.existsSync(path.join(d, 'grouping.json'))) {
@@ -276,12 +283,12 @@ function cmdNext() {
       console.log(`  rules: prompts/grouping.md`);
       console.log(`  write: ${path.join(d, 'grouping.json')}`);
       console.log(`  then:  node scripts/cs.mjs group ${id}`);
-      return;
+      return true;
     }
     const tasks = read(path.join(d, 'tasks.json'));
     if (!tasks) {
       console.log(`NEXT — apply the grouping you wrote: node scripts/cs.mjs group ${id}`);
-      return;
+      return true;
     }
     for (const t of tasks.tasks) {
       for (const [name, pass] of Object.entries(PASSES)) {
@@ -298,11 +305,27 @@ function cmdNext() {
           console.log('  for the other pass: two standards in view at once move the levels');
           console.log('  the first three are read at.');
         }
-        return;
+        return true;
       }
     }
   }
   console.log('NOTHING LEFT TO READ — node scripts/cs.mjs report');
+  return false;
+}
+
+function cmdNext() {
+  if (nextStep()) cardSoFar();
+}
+
+/** What can be handed over right now. A reading interrupted part way is still
+ *  a reading of the tasks it got through, and the card is built from whatever
+ *  has been kept; printing this beside every next step means there is never a
+ *  moment where the only answer to "what have you got" is nothing. */
+function cardSoFar() {
+  const tasks = allPlacements();
+  if (!tasks.length) return;
+  console.log('');
+  console.log(`  A card over the ${tasks.length} task(s) read so far, at any point: node scripts/cs.mjs report`);
 }
 
 function cmdGroup(id) {
