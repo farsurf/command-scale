@@ -65,12 +65,21 @@ same thing at length, for somebody who wants it.
 
 `report` also writes the same reading as a single page, `reading.html`, beside
 the readings, and `page` writes that page to standard output. It loads nothing
-from anywhere and works offline. **A filesystem path is not a way of handing
-something over unless they are at that filesystem.** An assistant often runs
-somewhere the person is not — another machine, a container, a remote
-workspace — and a path printed there opens nothing where they are sitting. So:
-render the page if you can render one, or write it where they can reach it and
-say where, or give them the card as text. Give the path as well, never instead.
+from anywhere and works offline.
+
+**A page is handed over only when they can see it.** Whatever surface your own
+tooling gives you that puts something in front of a person — a rendered page, a
+preview, an image, a document — is the first choice, and `page` writes the page
+out for you to pass to it. Next best is a file where they are already looking:
+`page --out` into the folder they have open. A path comes last and never alone:
+an assistant frequently runs somewhere the person is not, and a path they
+cannot open is a reading they were not given.
+
+**Say what it means beside it**, in whatever language they are speaking: where
+they stand, which situation is lowest, and what the next height would close.
+The block is in the standard's own terms because those terms are the standard;
+somebody hearing them for the first time needs them said plainly once. Do not
+write the sentence that would close the gap — that stays theirs.
 
 ## The order of work
 
