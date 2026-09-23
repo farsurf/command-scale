@@ -125,12 +125,18 @@ function candidates() {
       out.push({
         file: f, id,
         project: path.basename(path.dirname(f)),
-        at: (theirs[0].at || '').slice(0, 10),
+        // When they last said something in it, which is what "newest" means to
+        // somebody choosing what to read, and what the row prints. Ordered by
+        // anything else — when the file was last touched, say — the listing
+        // would call itself newest first while showing an older conversation
+        // above a newer one.
+        at: (theirs[theirs.length - 1].at || theirs[0].at || '').slice(0, 10),
         turns: theirs.length,
         opens: (theirs[0].quote || '').replace(/\s+/g, ' ').slice(0, 64),
       });
     }
   }
+  out.sort((a, b) => String(b.at).localeCompare(String(a.at)));
   return out;
 }
 

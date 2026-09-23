@@ -53,7 +53,7 @@ export const DEPTH_NEED = 3;
  *  was thrown out by another would leave nobody able to say which was right. */
 export const flat = (s) => String(s || '').replace(/\s+/g, '').toLowerCase();
 
-const notTheirs = (p) => p && (p.landed === 'not_theirs' || p.landed === 'not_her');
+const notTheirs = (p) => p && p.landed === 'not_theirs';
 
 /** The reasons that say the answer came back malformed rather than untrue.
  *
@@ -326,10 +326,10 @@ export function standing(tasks) {
     }
     if (!seen) continue;
     // The height worth naming next. One above what is held, once something is
-    // held; otherwise the height they are already producing at. Read as
-    // held + 1 alone it said "nine more occasions and you hold L1" to somebody
-    // whose work all sits at L3 — a debt at a height they had left behind, and
-    // nothing at the height they were actually standing on.
+    // held; otherwise the height they are already producing at. Held + 1 alone
+    // points below wherever somebody is standing for as long as they hold
+    // nothing, which is a debt at a height they have already left behind and
+    // silence at the height they are working on.
     const next = held ? Math.min(5, held + 1) : (reached || 1);
     const on = cellState(cells[column][next]);
     out.situations[column] = {

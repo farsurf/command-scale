@@ -90,7 +90,7 @@ export function card(st, meta = {}) {
     L.push(`  ${SITUATION_NAMES[c]} — every height with a record`);
     L.push(...rungTable(s));
     if (s.samples < NEED) {
-      L.push(`      to hold L${s.next} ${LEVEL_NAMES[s.next]}: ${s.short} more occasion${s.short === 1 ? '' : 's'} at that height, ${st.must} of ten met`);
+      L.push(`      to hold L${s.next} ${LEVEL_NAMES[s.next]}: ${s.short} more occasion${s.short === 1 ? '' : 's'} at that height, ${st.must} of ${st.need} met`);
     }
     // What that height IS, in the standard's own words, so the number beside
     // it is a claim somebody can act on rather than a score.
