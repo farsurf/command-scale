@@ -28,9 +28,9 @@ marked `"objective": null` — messages about the exchange rather than about
 anything being made, and messages that are nothing but a reaction. What decides
 it is whether the message is after something, not what it is about.
 
-That task carries `"work": ""` and `"reopened": false`; neither means anything
-for a task with no objective, and it exists to hold messages rather than to be
-read. Leave it out when nothing belongs in it.
+That task carries `"reopened": false`, which means nothing for a task with no
+objective; it exists to hold messages rather than to be read. Leave it out when
+nothing belongs in it.
 
 That is about what a message is for. The second job below is about something
 else — whether a message was an attempt to say anything at all — and it is
@@ -132,7 +132,6 @@ Output one JSON object:
     {
       "objective": "what they were trying to get made, in their words where you can",
       "made": "what would exist, or be different, once this task is done; empty when nothing would",
-      "work": "which of the things they are making this belongs to — the name it goes by across conversations, if you can tell, and an empty string if you cannot",
       "messages": [0, 3, 4, 9],
       "reopened": true
     }

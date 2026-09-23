@@ -82,7 +82,7 @@ function applyGrouping(turns, grouping) {
     const idx = (t.messages || []).filter((n) => Number.isInteger(n) && n >= 0 && n < turns.length);
     for (const n of idx) used.set(n, (used.get(n) || 0) + 1);
     tasks.push({
-      n: i, objective: t.objective || null, work: t.work || '',
+      n: i, objective: t.objective || null,
       turns: idx.map((n) => (empty.has(n)
         ? { ...turns[n], notInput: turns[n].notInput || empty.get(n) || 'not an attempt to say anything' }
         : turns[n])),

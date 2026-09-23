@@ -172,8 +172,10 @@ two.
 earlier, inside an arrangement they supplied. The other side is not being told
 where something is wrong in general, but which piece of a structure this person
 defined is the one misbehaving. *Against the rungs below:* this rung presupposes that
-they gave the structure in the first place, so it can only follow their own
-earlier rung-5 asking. *The mistake to avoid:* naming a part of a structure
+they gave the structure in the first place, and whether they did is settled the
+way everything else here is settled, by their own words: a structure that first
+appeared in what came back is not theirs for having been repeated, and one they
+set out earlier is theirs still, wherever they set it out. *The mistake to avoid:* naming a part of a structure
 somebody else supplied is rung 2 or 3 — the structure has to be theirs for this
 to be evidence about them.
 
