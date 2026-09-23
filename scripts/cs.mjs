@@ -15,7 +15,7 @@ import { verifyPlacements, answerWasUnusable, standing, UNUSABLE, COLUMNS,
 
 /** The two passes. They are taken separately, against separate standards, and
  *  are blind to each other: held in one standard the fourth situation's
- *  arrival moved the other three, on one reading in seven. */
+ *  arrival moves the other three. */
 const PASSES = {
   place: { file: 'reading-place', prompt: 'prompts/placing.md',
     only: ['asking', 'reacting', 'blocked'],
@@ -98,7 +98,6 @@ function applyGrouping(turns, grouping) {
 function judgeInput(task) {
   const lines = [
     `Objective: ${task.objective || '(not stated)'}`,
-    task.work ? `Work: ${task.work}` : '',
     '',
     'Their messages, in order, each with what came back after it:',
   ];
@@ -271,8 +270,8 @@ function cmdNext() {
         if (name === 'know') {
           console.log('');
           console.log('  Take this pass on the task alone. Do not read the answer you wrote');
-          console.log('  for the other pass: two standards in view at once moved levels');
-          console.log('  inside the first three on one reading in seven.');
+          console.log('  for the other pass: two standards in view at once move the levels');
+          console.log('  the first three are read at.');
         }
         return;
       }

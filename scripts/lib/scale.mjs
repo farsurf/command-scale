@@ -2,10 +2,13 @@
 // model, or decides anything: it is handed the placements a reading left
 // behind and says where that leaves somebody.
 //
-// Every number in this file is the standard's own (§5.3), and the standard is
-// the only place that defines them. An implementation that changes them states
-// its values and keeps the three properties §5.3 names: a sample floor, a
-// crediting rate, and a gap between the crediting rate and the withdrawal rate.
+// The crediting numbers are the standard's own published defaults (§5.3). The
+// sample floor below which no rate is printed is this implementation's own
+// value, marked as such: §5.3 fixes that a floor must exist and leaves its
+// height to whoever implements, who states what they chose. An implementation
+// that changes any of them states its values and keeps the three properties
+// §5.3 names — a sample floor, a crediting rate, and a gap between the
+// crediting rate and the withdrawal rate.
 
 /** The four situations of B.2, in the order the standard names them.
  *  Appended to, never reordered: what is kept on disk encodes a situation by
@@ -34,8 +37,10 @@ export const PASS = 0.70;
 export const WARN = 0.65;
 export const DROP = 0.60;
 
-/** Under this many occasions no rate is printed: a rate over four things is a
- *  fact about those four. */
+/** The sample floor: under this many occasions no rate is printed, because a
+ *  rate over four occasions is a fact about those four. §5.3 requires a floor
+ *  and does not fix its height, so this number is this implementation's own and
+ *  is stated as its own wherever it is shown. */
 export const SHOW_RATE = 5;
 
 /** The sixth level is read across batches of closed tasks, never from one
@@ -99,8 +104,8 @@ function elsewhereIn(answer, turns) {
  *
  * The fourth situation is read in a pass of its own, against a standard of its
  * own, and the two passes are blind to each other. Held in one standard the
- * fourth's arrival moved the other three — the same words, the same model, and
- * levels inside the three drifted on one reading in seven. So an answer is
+ * fourth's arrival moves the other three — the same words and the same model
+ * give different levels inside them. So an answer is
  * checked against the situations it was asked for, and a placement naming any
  * other is a placement from a pass that was not taken.
  */

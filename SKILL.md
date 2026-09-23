@@ -11,7 +11,9 @@ decide where a message sits. Nothing here calls a model — you are the model �
 and nothing leaves this machine.
 
 **Read `spec/the-command-scale-v1.0.md` before your first reading.** §4, §5 and
-§9, together with Appendix B, are the normative text. The prompts below are the
+§9, together with Appendix B, are the normative text, and Appendix A is
+normative for the fourth situation — `prompts/knowing.md` and `prompts/depth.md`
+are its implementation. The prompts below are the
 instrument, and they are written to be applied exactly as given.
 
 ## The order of work
@@ -30,16 +32,23 @@ node scripts/cs.mjs next          # what to do, one step at a time
 `status`, `recent`, `why` and `report` are arithmetic over what is already on
 disk. Say so when somebody asks how much checking their level costs.
 
-**Never read their whole history unasked.** A conversation of a hundred and
-fifty messages is about fifty tasks and a hundred readings. `list` prints the
-estimate; `--budget N` takes conversations newest first while they fit, and
-refuses rather than overrunning. If they have not said how much to spend, read
+**Never read their whole history unasked.** A long conversation can cost many
+times what a short one does, and the difference is not the message count.
+`list` prints what each one would cost before anything is spent; `--budget N`
+takes conversations newest first while they fit, and refuses rather than
+overrunning. If they have not said how much to spend, read
 a few of the newest and say plainly that this is a placement over a few tasks.
 
-**Offer the slice by when it happened or which project it was in** — `--since`,
-`--project`, `--take`. Choosing their best conversations and leaving out the
-rest makes the reading a fact about those conversations rather than about them,
-and `list` says so on every run.
+**Offer the slice by when it happened, or by which source it came from** —
+`--since`, `--project`, `--take`, where the sources are whatever `list` prints.
+Choosing their best conversations and leaving out the rest makes the reading a
+fact about those conversations rather than about them, and `list` says so on
+every run.
+
+**Say what this implementation can read.** It reads the session files a coding
+agent leaves on the machine, and it recognises one layout today: the JSON-lines
+files under `~/.claude/projects`. A conversation kept any other way is read with
+`--file` once it has been saved as plain text with each side's turns marked.
 
 `next` tells you which file to read, which rules to apply, and which file to
 write. There are exactly two things you ever write:
@@ -58,20 +67,17 @@ standard the other pass holds. An `elsewhere` entry voids the placements of the
 pass that wrote it, which is what keeps a question from being counted as a
 request and a request from being counted as a question.
 
-**Take the second pass without the first answer in view.** Held in one standard,
-the fourth situation's arrival moved the other three: the same words, the same
-model, and levels inside the first three drifted on one reading in seven. Two
-passes over one input cost one more reading and leave the first three exactly
-the reading they were.
+**Take the second pass without the first answer in view.** Held in one standard
+with the other three, the fourth situation's arrival moves them: the same words
+and the same model give different levels inside the first three. Two passes over
+one input cost one more reading and leave the first three the reading they were.
 
 `node scripts/cs.mjs place <session> <task>` keeps the first pass;
 `node scripts/cs.mjs know <session> <task>` keeps the second. When there is
 nothing left: `node scripts/cs.mjs report`.
 
 A pass that finds nothing of its own in a task answers with no placements and
-an `elsewhere` naming what it passed over. That is the commonest answer there
-is — most tasks that made something ask to be told nothing — and it is an
-answer, not a fault.
+an `elsewhere` naming what it passed over. That is an answer, not a fault.
 
 ## What the program will refuse
 
@@ -142,9 +148,12 @@ one month after an implementation begins to arrange practice in it, on a single
 date for everyone that implementation assesses (B.2). Nothing here arranges
 practice, so this implementation states its date as never, and the card says so.
 
-**Under ten occasions at a height, no level is held there** — and under five, no
-rate is printed at all. A reading over few tasks is a placement, not a
-measurement (§10). Say that plainly if you are asked to summarise the card;
+**Under ten occasions at a height with seven met, no level is held there.**
+That is the standard's published default (§5.3). This implementation also sets
+a sample floor of five, under which no rate is printed at all; five is this
+implementation's own value, not the standard's, and §5.3 requires it to be
+stated as such. A reading over few tasks is a placement, not a measurement
+(§10). Say that plainly if you are asked to summarise the card;
 never round it up into a verdict about the person.
 
 **Reading somebody else's record needs their consent first**, and where that
