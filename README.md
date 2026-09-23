@@ -38,23 +38,44 @@ Far apart means convention is doing the work. Converging means you are. It is a
 thought experiment for locating yourself, not a measurement procedure — no
 reading is taken from it.
 
+## Install it as a skill
+
+This repository is the skill. Put it where your agent looks for skills and it
+is installed:
+
+```
+git clone https://<this repo> ~/.claude/skills/command-scale
+```
+
+Then ask your agent to read your record against The Command Scale. It reads the
+transcripts already on your machine, takes the reading itself, and keeps what
+it found in `~/.command-scale`. No account, no key, no service: the code here
+imports three built-in modules and opens no socket at all.
+
+Looking costs nothing — where you stand, the last few tasks, the words behind
+any placement, all of it is arithmetic over files. Only reading a conversation
+you have not read before asks your agent to do any work, and it tells you what
+that will cost before it starts.
+
 ## What this repository is
 
 The standard, and the instrument for taking a reading against it. Both are open
 so that two implementations reach the same number; a scale whose readings
 cannot be reproduced is an opinion with a table in it.
 
+- **[`SKILL.md`](SKILL.md)** — how an agent takes a reading, and what it must
+  not imply about one. **[`prompts/`](prompts)** — the four standards a reading
+  is taken against. **[`scripts/`](scripts)** — the preparing, the citation
+  check and the counting, in Node with no dependencies.
 - **[`spec/the-command-scale-v1.0.md`](spec/the-command-scale-v1.0.md)** — the
   white paper. Its Appendix B is the normative text, together with §4 (how a
   level is read), §5 (crediting, including the default thresholds) and §9
   (assessing minors). Appendix A is normative for the Question situation. The
   rest of the paper is the argument for those appendices.
 
-Not yet in this repository, and coming in this order: the four judging prompts
-and the deterministic checks that verify their output; a skill that runs the
-whole reading inside your own coding agent, over your own local transcripts,
-with no API key and nothing uploaded; and the conformance fixtures that decide
-whether an implementation may call itself conformant.
+Not yet in this repository: the conformance fixtures that decide whether an
+implementation may call itself conformant, and the reading of L6 Myth, which
+needs thirty closed tasks before it can be taken at all.
 
 ## Implementing it
 

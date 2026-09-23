@@ -17,10 +17,10 @@ import { verifyPlacements, answerWasUnusable, standing, UNUSABLE, COLUMNS,
  *  are blind to each other: held in one standard the fourth situation's
  *  arrival moved the other three, on one reading in seven. */
 const PASSES = {
-  place: { file: 'reading-place', prompt: 'skill/prompts/placing.md',
+  place: { file: 'reading-place', prompt: 'prompts/placing.md',
     only: ['asking', 'reacting', 'blocked'],
     says: 'the first three situations — what should become true, what is true of what came back, and that progress has stopped' },
-  know: { file: 'reading-know', prompt: 'skill/prompts/knowing.md',
+  know: { file: 'reading-know', prompt: 'prompts/knowing.md',
     only: ['knowing'],
     says: 'the fourth situation on its own — what is asked to be told' },
 };
@@ -249,7 +249,7 @@ function cmdNext() {
     if (!fs.existsSync(path.join(d, 'grouping.json'))) {
       console.log(`NEXT — group one conversation into tasks.`);
       console.log(`  read:  ${path.join(d, 'grouping-input.txt')}`);
-      console.log(`  rules: skill/prompts/grouping.md`);
+      console.log(`  rules: prompts/grouping.md`);
       console.log(`  write: ${path.join(d, 'grouping.json')}`);
       console.log(`  then:  node scripts/cs.mjs group ${id}`);
       return;
@@ -434,7 +434,7 @@ function cmdReport() {
   // three of fifteen says fifteen and claims evidence it has not looked at.
   const contributed = new Set(tasks.map((t) => String(t.id).split('#')[0])).size;
   let standard = '';
-  try { standard = fs.readFileSync(path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'skill', 'prompts', 'placing.md'), 'utf8'); } catch { /* the card prints without it */ }
+  try { standard = fs.readFileSync(path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'prompts', 'placing.md'), 'utf8'); } catch { /* the card prints without it */ }
   console.log(card(st, { tasks: tasks.length, sessions: contributed, standard }));
   const w = weakest(st);
   if (w) {

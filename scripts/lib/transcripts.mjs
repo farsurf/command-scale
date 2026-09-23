@@ -60,6 +60,11 @@ function notInputReason(body) {
   if (/^(Stop hook feedback|Caveat: The messages below were generated)/i.test(s)) {
     return 'inserted by the harness, not typed';
   }
+  // A harness reporting its own machinery back into the person's side of the
+  // record: a background job finishing, a hook firing, a tool being answered.
+  // The opening tag is the whole test, because what follows it is a report and
+  // reads like one.
+  if (/^<[a-z][a-z-]{2,30}>/.test(s)) return 'a report the harness wrote, not typed';
   return '';
 }
 
