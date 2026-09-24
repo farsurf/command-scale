@@ -5,7 +5,9 @@
 A six-level scale of the ability to use what a machine already knows — its
 derivation, its instrument, and what building it taught us.
 
-Published by [Mentor by farsurf](https://mentor.farsurf.com) (mentor.farsurf.com). Correspondence: the issue tracker of this repository.
+Authors: Mentor by farsurf. Correspondence: hi@farsurf.com, or the issue tracker of this repository.
+
+Published by [Mentor by farsurf](https://mentor.farsurf.com) (mentor.farsurf.com).
 Normative reference: Appendix B, The Command Scale v1.0. Licensed CC BY 4.0.
 
 Competing interests: see §12.
