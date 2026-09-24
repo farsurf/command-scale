@@ -11,7 +11,7 @@ Summary: https://creativecommons.org/licenses/by/4.0/
 
 Attribution for the unmodified text:
 
-> Mentor (mentor.farsurf.com). *The Command Scale: a scale of what a person can
+> Mentor by farsurf (mentor.farsurf.com). *The Command Scale: a scale of what a person can
 > get an artificial intelligence to produce.* Version 1.0. CC BY 4.0.
 
 Everything else in this repository — code, prompts, fixtures, the skill — is

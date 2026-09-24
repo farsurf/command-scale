@@ -114,7 +114,7 @@ Text and spec under [CC BY 4.0](LICENSE-TEXT.md). Code, prompts and fixtures
 under [Apache 2.0](LICENSE). The names are covered by neither — see
 [`TRADEMARK.md`](TRADEMARK.md).
 
-Published by [Mentor](https://mentor.farsurf.com), which sells a subscription
+Published by [Mentor by farsurf](https://mentor.farsurf.com), which sells a subscription
 product whose assessments are taken against this scale. That is a direct
 commercial interest in the scale being adopted, stated here and in §12 of the
 paper so it can be weighed.

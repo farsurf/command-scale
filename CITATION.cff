@@ -13,7 +13,7 @@ license-url: "https://github.com/farsurf/command-scale/blob/main/LICENSE"
 url: "https://github.com/farsurf/command-scale/blob/main/spec/the-command-scale-v1.0.md"
 repository-code: "https://github.com/farsurf/command-scale"
 authors:
-  - name: "Mentor"
+  - name: "Mentor by farsurf"
     website: "https://mentor.farsurf.com"
 keywords:
   - AI literacy
@@ -28,7 +28,7 @@ preferred-citation:
     A six-level scale of the ability to use what a machine already knows — its
     derivation, its instrument, and what building it taught us.
   authors:
-    - name: "Mentor"
+    - name: "Mentor by farsurf"
       website: "https://mentor.farsurf.com"
   year: 2026
   notes: >-

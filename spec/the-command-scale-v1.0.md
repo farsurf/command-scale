@@ -5,7 +5,7 @@
 A six-level scale of the ability to use what a machine already knows — its
 derivation, its instrument, and what building it taught us.
 
-Published by [Mentor](https://mentor.farsurf.com) (mentor.farsurf.com). Correspondence: the issue tracker of this repository.
+Published by [Mentor by farsurf](https://mentor.farsurf.com) (mentor.farsurf.com). Correspondence: the issue tracker of this repository.
 Normative reference: Appendix B, The Command Scale v1.0. Licensed CC BY 4.0.
 
 Competing interests: see §12.
@@ -229,7 +229,7 @@ The scale, its descriptors and its instrument are published under CC BY 4.0 and 
 
 ## 12. Competing interests
 
-This paper is published by Mentor, which sells a subscription product whose assessments are taken against this scale. That is a direct commercial interest in the scale being adopted, and it should be weighed when reading §7 in particular, where the evidence is our own and not independently replicated.
+This paper is published by Mentor by farsurf, which sells a subscription product whose assessments are taken against this scale. That is a direct commercial interest in the scale being adopted, and it should be weighed when reading §7 in particular, where the evidence is our own and not independently replicated.
 
 Three things are offered as partial mitigation, and readers should hold us to all three. The scale, its descriptors and its rules are published under CC BY 4.0 and are implementable without any software of ours. The thresholds are defaults rather than constants, so an adopter is not required to accept our calibration. And no reading against this scale produces a certificate that only we can issue — there is no credential to be sold.
 
@@ -249,7 +249,7 @@ This document links to Mentor's product pages. Those links exist for readers who
 
 - J. B. Biggs and K. F. Collis. *Evaluating the Quality of Learning: The SOLO Taxonomy.* Academic Press, 1982. — structural complexity of a response as the thing assessed, rather than the correctness of its content.
 
-- Mentor (mentor.farsurf.com), *The Command Scale*, version 1.0, pre-publication draft — the normative text, Appendix B of this paper.
+- Mentor by farsurf (mentor.farsurf.com), *The Command Scale*, version 1.0, pre-publication draft — the normative text, Appendix B of this paper.
 
 ## A. Appendix A · Question (normative)
 
@@ -298,7 +298,7 @@ A placement is met when what came back took up the very thing the command put up
 
 The normative text of The Command Scale (TCS), version 1.0, is this appendix together with three sections of the body it relies on: §4 (how a level is read), §5 (crediting a level, including the thresholds in §5.3) and §9 (assessing minors). The rest of the paper is explanation. Every section reference below, and in Appendix A, is to this paper; an implementation citing the scale cites these parts together (B.6).
 
-*Normative text · Version 1.0 · Pre-publication draft · Published by Mentor (mentor.farsurf.com) · CC BY 4.0*
+*Normative text · Version 1.0 · Pre-publication draft · Published by Mentor by farsurf (mentor.farsurf.com) · CC BY 4.0*
 
 ### B.1 Scope
 
@@ -393,7 +393,7 @@ This scale may be used, quoted, taught and implemented by anyone, with attributi
 
 ### B.6 Citation
 
-> Mentor (mentor.farsurf.com). *The Command Scale: a scale of what a person can get an artificial intelligence to produce.* Version 1.0, pre-publication draft. L1 Note · L2 Verse · L3 Canon · L4 Chronicle · L5 Saga · L6 Myth.
+> Mentor by farsurf (mentor.farsurf.com). *The Command Scale: a scale of what a person can get an artificial intelligence to produce.* Version 1.0, pre-publication draft. L1 Note · L2 Verse · L3 Canon · L4 Chronicle · L5 Saga · L6 Myth.
 
 ### B.7 Revision history
 
@@ -401,4 +401,4 @@ This scale may be used, quoted, taught and implemented by anyone, with attributi
 | --- | --- | --- |
 | 1.0 | — | First publication, not yet released. Four situations, all four counting toward a level: Request, Review, Roadblock and **Question**; the levels of Question are in Appendix A of this paper. |
 
-Cite this paper as: Mentor (mentor.farsurf.com). *Measuring what a person can get an AI to build.* White paper, version 1.0, pre-publication draft.
+Cite this paper as: Mentor by farsurf (mentor.farsurf.com). *Measuring what a person can get an AI to build.* White paper, version 1.0, pre-publication draft.
